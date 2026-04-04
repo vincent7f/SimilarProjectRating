@@ -1,0 +1,17 @@
+# Similar Project Rating System - AI/LLM Dependencies
+# 相似项目评分系统 - AI/LLM依赖
+#
+# These are optional dependencies for LLM integration.
+# Install: pip install -r requirements/base.txt -r requirements/ai.txt
+#
+# 这些是LLM集成的可选依赖。
+# 安装：pip install -r requirements/base.txt -r requirements/ai.txt
+
+# Unified LLM Interface / 统一LLM接口
+litellm>=1.35.0
+
+# OpenAI SDK (optional, for direct OpenAI API usage) / OpenAI SDK（可选）
+openai>=1.20.0
+
+# Anthropic SDK (optional, for Claude API) / Anthropic SDK（可选，用于Claude API）
+anthropic>=0.30.0

@@ -1,0 +1,94 @@
+# Similar Project Rating System - Main Configuration File
+# 相似项目评分系统 - 主配置文件
+#
+# This file contains all configurable parameters for the system.
+# Environment variables can be injected using ${VAR_NAME} syntax.
+# 此文件包含系统的所有可配置参数。
+# 可使用${VAR_NAME}语法注入环境变量。
+
+# ---------------------------------------------------------------------------
+# GitHub API Settings / GitHub API设置
+# ---------------------------------------------------------------------------
+github:
+  api_token: ${GITHUB_TOKEN:''}
+  rate_limit: 5000
+  timeout_seconds: 30
+  base_url: "https://api.github.com"
+  per_page: 30
+
+# ---------------------------------------------------------------------------
+# AI / LLM Provider Settings / AI/LLM提供商设置
+# ---------------------------------------------------------------------------
+ai:
+  provider: "ollama"          # ollama | openai | litellm
+  model: "llama3.2:latest"    # Default model name / 默认模型名
+  api_base: "http://localhost:11434"
+  api_key: ${AI_API_KEY:''}
+  fallback_enabled: true      # Auto-switch provider on failure / 失败时自动切换
+  temperature: 0.7            # Creativity control (0.0=deterministic, 2.0=random)
+                              # 创造性控制（0.0=确定性，2.0=随机）
+  max_tokens: 2048
+  request_timeout: 120        # Seconds / 秒
+  max_retries: 3
+
+# ---------------------------------------------------------------------------
+# Analysis Engine Settings / 分析引擎设置
+# ---------------------------------------------------------------------------
+analysis:
+  max_projects: 20            # Max projects retained after filtering (top-N by stars)
+                              # 过滤后保留的最大项目数（按stars取前N）
+  min_similarity_score: 0.6   # Relevance threshold (0.0-1.0), below = filtered out
+                              # 相关性阈值（0.0-1.0），低于此值的将被过滤
+  download_timeout: 300       # Seconds to wait for repo archive download
+                              # 等待repo压缩包下载的时间（秒）
+  max_code_size_mb: 50        # Skip detailed analysis if archive exceeds size (MB)
+                              # 如果压缩包超过此大小则跳过详细分析（MB）
+  parallel_analysis: true     # Analyze multiple projects concurrently
+                              # 并行分析多个项目
+  max_concurrent_analyses: 4  # Max simultaneous project analyses
+                              # 同时进行的最大项目分析数
+  skip_large_repos: true      # For large repos, analyze only core directories
+                              # 对于大型仓库，仅分析核心目录
+
+# ---------------------------------------------------------------------------
+# Scoring System Settings / 评分系统设置
+# ---------------------------------------------------------------------------
+scoring:
+  # Dimension weights (must sum to ~1.0) / 维度权重（总和须约等于1.0）
+  weights:
+    code_quality: 0.25       # Code style, tests, dependencies, documentation
+                              # 代码风格、测试、依赖、文档
+    community: 0.20          # Star growth, commit frequency, issue resolution
+                              # Star增长、提交频率、Issue解决
+    functionality: 0.18      # Feature completeness, examples, API coverage
+                              # 功能完整性、示例、API覆盖
+    maturity: 0.15           # Version history, CI/CD, governance
+                              # 版本历史、CI/CD、治理
+    reputation: 0.12         # External mentions, tutorials, community trust
+                              # 外部提及、教程、社区信任
+    sustainability: 0.10     # Maintenance team, roadmap, long-term viability
+                              # 维护团队、路线图、长期可行性
+  normalization_method: "minmax"  # minmax | zscore
+
+# ---------------------------------------------------------------------------
+# Logging Settings / 日志设置
+# ---------------------------------------------------------------------------
+logging:
+  level: "INFO"              # DEBUG | INFO | WARNING | ERROR
+  file_path: "./logs"        # Log file storage directory / 日志文件存储目录
+  max_size_mb: 100           # Rotation trigger size (MB) / 触发轮转的大小（MB）
+  backup_count: 5            # Rotated backups to retain / 保留的轮转备份数
+  console_output: true       # Also print to terminal / 也打印到终端
+  json_format: true          # Structured JSON log entries / 结构化JSON日志条目
+  session_log_prefix: "session_"  # Per-session log filename prefix
+                                 # 每次会话日志文件名前缀
+
+# ---------------------------------------------------------------------------
+# Cache Settings / 缓存设置
+# ---------------------------------------------------------------------------
+cache:
+  enabled: true
+  ttl_seconds: 3600          # Cache entry lifetime in seconds (default: 1 hour)
+                              # 缓存条目生命周期（秒）（默认：1小时）
+  directory: "./data/cache"  # Cache storage directory / 缓存存储目录
+  max_entries: 500           # Maximum cached items / 最大缓存项数

@@ -1,0 +1,29 @@
+# Similar Project Rating System - Base Runtime Dependencies
+# 相似项目评分系统 - 基础运行时依赖
+#
+# Install: pip install -r requirements/base.txt
+# Install with extras: pip install -r requirements/base.txt -r requirements/ai.txt
+
+# HTTP Client (async support) / 异步HTTP客户端
+httpx[http2]>=0.27.0
+
+# Configuration / 配置管理
+pyyaml>=6.0
+
+# Terminal UI / 终端美化输出
+rich>=13.0
+
+# Template Engine / 模板引擎（报告生成）
+jinja2>=3.1
+
+# Data Validation / 数据验证（可选，用于配置schema）
+pydantic>=2.0
+
+# Async utilities / 异步工具库
+aiofiles>=23.0
+
+# Date/Time handling / 日期时间处理
+python-dateutil>=2.8
+
+# Archive extraction (for downloading release zips) / 归档解压（用于下载release压缩包)
+unzip-it>=0.1.1

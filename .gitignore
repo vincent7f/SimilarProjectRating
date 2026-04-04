@@ -1,0 +1,91 @@
+# Byte-compiled / optimized / DLL files / 字节编译/优化/DLL文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions / C扩展
+*.so
+
+# Distribution / packaging / 分发/打包
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller / PyInstaller打包文件
+*.manifest
+*.spec
+
+# Installer logs / 安装日志
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports / 单元测试/覆盖率报告
+htmlcov/
+.tox/
+.nox/
+.coverage
+.*coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations / 翻译
+*.mo
+*.pot
+
+# Environments / 环境
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project specific / 项目特定
+logs/*.log
+!logs/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
+data/results/*
+!data/results/.gitkeep
+*.db
+*.sqlite
+
+# OS generated files / 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local config overrides (should not be committed) / 本地配置覆盖（不应提交）
+configs/local.yaml
+configs/.env

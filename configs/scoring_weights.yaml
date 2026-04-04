@@ -1,0 +1,61 @@
+# Scoring Weights Configuration
+# 评分权重配置
+#
+# This file defines the dimension weights used in the multi-dimensional
+# scoring algorithm. Values must be non-negative and sum to approximately 1.0.
+#
+# 此文件定义多维评分算法中使用的维度权重。
+# 值必须为非负数且总和约为1.0。
+
+# Standard Weight Set (Default) / 标准权重集（默认）
+standard:
+  code_quality: 0.25         # Code style, test coverage, dependency safety, docs
+                              # 代码风格、测试覆盖率、依赖安全、文档
+  community: 0.20            # Star growth trends, commit frequency, issue handling
+                              # Star增长趋势、提交频率、Issue处理
+  functionality: 0.18        # Feature completeness, extensibility, documentation
+                              # 功能完整性、可扩展性、文档
+  maturity: 0.15             # Release history, CI/CD, production readiness
+                              # 发布历史、CI/CD、生产就绪
+  reputation: 0.12           # Community recognition, tutorial coverage
+                              # 社区认可、教程覆盖
+  sustainability: 0.10       # Maintenance predictability, contributor base
+                              # 维护可预测性、贡献者基础
+
+# Code-Focused Weight Set / 代码导向权重集
+code_focused:
+  code_quality: 0.35
+  community: 0.15
+  functionality: 0.20
+  maturity: 0.12
+  reputation: 0.10
+  sustainability: 0.08
+
+# Community-Focused Weight Set / 社区导向权重集
+community_focused:
+  code_quality: 0.15
+  community: 0.32
+  functionality: 0.15
+  maturity: 0.15
+  reputation: 0.15
+  sustainability: 0.08
+
+# Production-Ready Weight Set / 生产就绪权重集
+production_ready:
+  code_quality: 0.22
+  community: 0.15
+  functionality: 0.15
+  maturity: 0.25             # Emphasize stability and CI/CD
+                              # 强调稳定性和CI/CD
+  reputation: 0.13
+  sustainability: 0.10
+
+# Learning/Education Weight Set / 学习/教育权重集
+learning:
+  code_quality: 0.20
+  community: 0.18
+  functionality: 0.25        # Good docs and examples matter most
+                              # 良好的文档和示例最重要
+  maturity: 0.12
+  reputation: 0.15
+  sustainability: 0.10

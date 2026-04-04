@@ -1,0 +1,157 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "similar-project-rating"
+version = "0.1.0"
+description = "AI-powered GitHub open-source project analysis, scoring, and ranking system"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Similar Project Rating Team"}
+]
+keywords = [
+    "github",
+    "project-analysis",
+    "code-quality",
+    "ai-recommendation",
+    "open-source",
+    "llm",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.scripts]
+similar-project-rating = "src.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+# ---------------------------------------------------------------------------
+# Black - Code Formatter / Black代码格式化器
+# ---------------------------------------------------------------------------
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+)/
+'''
+
+# ---------------------------------------------------------------------------
+# Pylint - Code Linter / Pylint代码检查器
+# ---------------------------------------------------------------------------
+[tool.pylint.main]
+jobs = 1
+load-plugins = []
+ignore = [".git", "__pycache__", "venv", ".venv"]
+
+[tool.pylint.messages_control]
+disable = [
+    "C0114",  # missing-module-docstring (we use Google-style)
+    "C0115",  # missing-class-docstring (we use Google-style)
+    "C0116",  # missing-function-docstring (we use Google-style)
+    "R0903",  # too-few-public-methods (common for dataclasses)
+    "R0913",  # too-many-arguments (acceptable in some contexts)
+    "R0914",  # too-many-locals
+    "W0718",  # broad-exception-caught (sometimes needed)
+    "C0103",  # invalid-name (short names common in tests/dataclasses)
+]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.typecheck]
+ignored-modules = ["argparse", "asyncio"]
+
+# ---------------------------------------------------------------------------
+# mypy - Static Type Checker / mypy静态类型检查器
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+ignore_missing_imports = true
+exclude = [
+    "tests/",
+    "venv/",
+    ".venv/",
+    "build/",
+    "dist/",
+]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+# ---------------------------------------------------------------------------
+# pytest - Testing Framework / pytest测试框架
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as requiring external services",
+    "unit: marks tests as isolated unit tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# ---------------------------------------------------------------------------
+# pytest-cov - Coverage Reporting / 覆盖率报告
+# ---------------------------------------------------------------------------
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/.venv/*",
+    "*/venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+fail_under = 80
+
+[tool.coverage.html]
+directory = "htmlcov"

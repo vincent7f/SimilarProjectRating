@@ -1,0 +1,75 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'ideas/**'
+      - 'plans/**'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/dev.txt
+
+      - name: Run Black format check
+        run: black --check --diff src/ tests/
+
+      - name: Run Pylint
+        run: pylint src/ --disable=C0114,C0115,C0116,R0903,R0913,R0914,W0718,C0103 || true
+
+      - name: Run mypy type check
+        run: mypy src --ignore-missing-imports --non-strict || true
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/dev.txt
+          pip install -e .
+
+      - name: Run unit tests
+        run: pytest tests/unit/ -v --tb=short --cov=src --cov-report=xml
+
+      - name: Upload coverage to Codecov (optional)
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  security:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run safety audit
+        run: |
+          pip install safety
+          safety check -r requirements/base.txt || true
+
+      - name: Run bandit security scan
+        run: |
+          pip install bandit
+          bandit -r src/ -ll || true

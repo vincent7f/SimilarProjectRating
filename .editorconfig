@@ -1,0 +1,25 @@
+# EditorConfig helps maintain consistent coding styles across editors.
+# EditorConfig帮助在不同编辑器之间保持一致的编码风格。
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
+
+[*.{md,yml,yaml,json,toml}]
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4
+max_line_length = 100
+
+[Makefile]
+indent_style = tab
