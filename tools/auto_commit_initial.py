@@ -113,7 +113,7 @@ async def auto_commit_initial() -> bool:
         )
         
         if success:
-            print(f"✅ SUCCESS: Initial implementation auto-committed")
+            print(f"[SUCCESS] Initial implementation auto-committed")
             
             # Record completion if session manager available
             if session_manager:
@@ -132,21 +132,21 @@ async def auto_commit_initial() -> bool:
                 # Generate session summary
                 try:
                     summary = await session_manager.generate_summary()
-                    print(f"\n📋 Session summary generated:\n{summary}")
+                    print(f"\n[SUMMARY] Session summary generated:\n{summary}")
                 except Exception as summary_err:
                     print(f"[WARNING] Could not generate session summary: {summary_err}")
             
             # Try to push if remote is configured
             try:
                 await git_helper._try_push()
-                print("🚀 Pushed to remote repository (if configured)")
+                print("[PUSHED] Pushed to remote repository (if configured)")
             except Exception as push_err:
                 print(f"[INFO] Remote push not configured or failed: {push_err}")
             
             return True
             
         else:
-            print(f"❌ FAILED: Auto-commit failed")
+            print(f"[FAILED] Auto-commit failed")
             # Record failure if session manager available
             if session_manager:
                 await session_manager.record_step_completion(
@@ -157,7 +157,7 @@ async def auto_commit_initial() -> bool:
             return False
             
     except Exception as e:
-        print(f"❌ ERROR: {e}")
+        print(f"[ERROR] {e}")
         return False
 
 
@@ -186,12 +186,12 @@ async def create_test_commit() -> bool:
         )
         
         if success:
-            print(f"✅ Test auto-commit successful")
+            print(f"[SUCCESS] Test auto-commit successful")
             # Clean up test file after success
             test_file.unlink()
             return True
         else:
-            print(f"❌ Test auto-commit failed")
+            print(f"[FAILED] Test auto-commit failed")
             return False
             
     except Exception as e:
@@ -223,10 +223,10 @@ async def main() -> None:
         # Test auto-commit functionality with a small test
         test_ok = await create_test_commit()
         if test_ok:
-            print("\n✅ Auto-commit functionality verified")
+            print("\n[VERIFIED] Auto-commit functionality verified")
             print("   The system is ready for step-by-step auto-commit")
         else:
-            print("\n⚠️ Auto-commit functionality needs debugging")
+            print("\n[WARNING] Auto-commit functionality needs debugging")
         return
     
     # Perform initial auto-commit
@@ -234,17 +234,17 @@ async def main() -> None:
     
     if success:
         print("\n" + "=" * 60)
-        print("🎉 INITIAL AUTO-COMMIT COMPLETE!")
+        print("INITIAL AUTO-COMMIT COMPLETE!")
         print("=" * 60)
         print("\nThe Similar Project Rating System has been:")
-        print("1. ✅ Fully implemented (40+ files)")
-        print("2. ✅ Auto-committed with descriptive message")
-        print("3. ✅ Session tracking enabled")
-        print("4. ✅ Git helper functional")
+        print("1. [DONE] Fully implemented (40+ files)")
+        print("2. [DONE] Auto-committed with descriptive message")
+        print("3. [DONE] Session tracking enabled")
+        print("4. [DONE] Git helper functional")
         print("\nProject is ready for development with step-by-step auto-commit.")
     else:
         print("\n" + "=" * 60)
-        print("⚠️ AUTO-COMMIT FAILED")
+        print("[WARNING] AUTO-COMMIT FAILED")
         print("=" * 60)
         print("\nPlease check:")
         print("1. Git repository configuration")
