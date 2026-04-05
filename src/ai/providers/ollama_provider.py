@@ -37,7 +37,7 @@ class OllamaProvider(BaseProvider):
 
     def __init__(
         self,
-        model: str = "llama3.2:latest",
+        model: str = "gemma4:26b-a4b-it-q4_K_M",
         api_base: str = "http://localhost:11434",
         api_key: str = "",
         timeout: int = 120,

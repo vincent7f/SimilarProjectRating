@@ -21,7 +21,7 @@ github:
 # ---------------------------------------------------------------------------
 ai:
   provider: "ollama"          # ollama | openai | litellm
-  model: "llama3.2:latest"    # Default model name / 默认模型名
+  model: "gemma4:26b-a4b-it-q4_K_M"    # Default model name (gemma4:26b-a4b-it-q4_K_M) / 默认模型名
   api_base: "http://localhost:11434"
   api_key: ${AI_API_KEY:''}
   fallback_enabled: true      # Auto-switch provider on failure / 失败时自动切换
@@ -100,6 +100,26 @@ output:
     comparison: true                     # Include comparison table / 包含比较表
   filename_format: "analysis_{query}_{timestamp}.md"  # Filename pattern / 文件名模式
   archive_old_reports: true              # Compress reports older than 30 days / 压缩超过30天的报告
+
+# ---------------------------------------------------------------------------
+# Parallel Execution Settings / 并行执行设置
+# ---------------------------------------------------------------------------
+parallel:
+  # AI-dependent tasks (default: serial execution) / AI依赖任务（默认：串行执行）
+  ai_concurrent_limit: 1      # Maximum concurrent AI-dependent tasks / AI依赖任务的最大并发数
+  enable_parallel_ai: false   # Disable parallel AI by default / 默认禁用AI并行
+  
+  # Non-AI tasks (default: 5 parallel tasks) / 非AI任务（默认：5个并行任务）
+  non_ai_concurrent_limit: 5  # Maximum concurrent non-AI tasks / 非AI任务的最大并发数
+  enable_parallel_non_ai: true # Enable parallel non-AI by default / 默认启用非AI并行
+  
+  # Timeout and adaptive settings / 超时和自适应设置
+  ai_semaphore_timeout: 300   # Seconds to wait for AI resource / 等待AI资源的秒数
+  adaptive_scaling: false     # Disable adaptive scaling by default / 默认禁用自适应缩放
+  
+  # Overall limits / 总体限制
+  min_concurrent_tasks: 1    # Minimum concurrent tasks / 最小并发任务数
+  max_concurrent_tasks: 10   # Maximum concurrent tasks / 最大并发任务数
 
 # ---------------------------------------------------------------------------
 # Cache Settings / 缓存设置

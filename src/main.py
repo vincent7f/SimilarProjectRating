@@ -172,6 +172,45 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
              "If not provided, auto-generated timestamp will be used. "
              "此分析会话的标识符（用于提交消息）。如未提供，将使用自动生成的时间戳。",
     )
+    
+    # Resume and concurrency functionality for task recovery and parallel execution
+    # 用于任务恢复和并行执行的恢复和并发功能
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        default=False,
+        help="Enable session resumption from checkpoint. "
+             "Requires --session-id of an existing session. "
+             "从检查点启用会话恢复。需要现有会话的--session-id。",
+    )
+    parser.add_argument(
+        "--no-resume",
+        action="store_true",
+        default=False,
+        help="Disable resume functionality (force new session). "
+             "禁用恢复功能（强制新会话）。",
+    )
+    parser.add_argument(
+        "--max-concurrent-non-ai",
+        type=int,
+        default=5,
+        help="Maximum concurrent non-AI dependent tasks (default: 5). "
+             "非AI依赖任务的最大并发数（默认：5）。",
+    )
+    parser.add_argument(
+        "--max-concurrent-ai",
+        type=int,
+        default=1,
+        help="Maximum concurrent AI-dependent tasks (default: 1). "
+             "AI依赖任务的最大并发数（默认：1）。",
+    )
+    parser.add_argument(
+        "--disable-parallel-ai",
+        action="store_true",
+        default=False,
+        help="Disable parallel execution for AI tasks (force serial). "
+             "禁用AI任务的并行执行（强制串行）。",
+    )
 
     return parser.parse_args(argv)
 
@@ -189,6 +228,7 @@ async def async_main(args: argparse.Namespace) -> int:
     7. Rank and generate recommendations
     8. Output reports and session summary
     9. Auto-commit step-by-step if enabled
+    10. Task checkpointing and resume support (new)
 
     异步执行主分析流水线。
     编排完整的工作流程：
@@ -201,6 +241,7 @@ async def async_main(args: argparse.Namespace) -> int:
     7. 排名并生成推荐
     8. 输出报告和会话总结
     9. 如已启用，自动提交每个步骤
+    10. 任务检查点和恢复支持（新增）
 
     Args:
         args: Parsed command-line arguments.
@@ -218,6 +259,15 @@ async def async_main(args: argparse.Namespace) -> int:
         not args.no_auto_commit
     )
     
+    # Setup resume configuration
+    # 设置恢复配置
+    enable_resume = args.resume and not args.no_resume
+    
+    # Setup parallel execution configuration
+    # 设置并行执行配置
+    max_concurrent_ai = 1 if args.disable_parallel_ai else args.max_concurrent_ai
+    max_concurrent_non_ai = args.max_concurrent_non_ai
+    
     if enable_auto_commit:
         print("[INFO] Auto-commit mode: ENABLED")
         if args.use_worktrees:
@@ -226,6 +276,17 @@ async def async_main(args: argparse.Namespace) -> int:
         print("[INFO] Auto-commit mode: DISABLED")
     
     session_id = args.session_id or f"session-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    
+    # Initialize resume system
+    # 初始化恢复系统
+    if enable_resume and args.session_id:
+        print(f"[INFO] Resume mode: ENABLED for session {args.session_id}")
+        print(f"[INFO] Parallel execution: AI tasks={max_concurrent_ai}, Non-AI tasks={max_concurrent_non_ai}")
+    elif enable_resume and not args.session_id:
+        print("[WARNING] Resume enabled but no session-id provided. Starting new session.")
+        enable_resume = False
+    else:
+        print("[INFO] Resume mode: DISABLED")
     
     # Initialize session manager for step tracking if auto-commit enabled
     # 如果启用自动提交，初始化会话管理器用于步骤追踪
@@ -258,17 +319,13 @@ async def async_main(args: argparse.Namespace) -> int:
             step_name="Pipeline initialization",
             description="Started analysis pipeline for user query",
             status="in_progress",
-            metadata={"query": args.query}
+            metadata={
+                "query": args.query,
+                "resume_enabled": str(enable_resume),
+                "max_concurrent_ai": str(max_concurrent_ai),
+                "max_concurrent_non_ai": str(max_concurrent_non_ai)
+            }
         )
-    
-    # TODO: Auto-commit after each meaningful step in the pipeline.
-    # 示例步骤完成后的自动提交：
-    # await _auto_commit_step_if_enabled(
-    #     git_helper, session_manager, session_id,
-    #     step_id="keyword-generation",
-    #     step_name="AI keyword generation",
-    #     step_description="Generated search keywords from user query using AI"
-    # )
     
     print(f"[INFO] Query: {args.query}")
     print(f"[INFO] Max projects: {args.max_projects}")
@@ -280,46 +337,133 @@ async def async_main(args: argparse.Namespace) -> int:
     if args.dry_run:
         print("[INFO] Mode: dry-run (search only)")
     print(f"[INFO] Session ID: {session_id}")
+    print(f"[INFO] Parallel settings: AI tasks={max_concurrent_ai}, Non-AI tasks={max_concurrent_non_ai}")
     
-    # Pipeline will be implemented starting from Step 7.1
-    # 流水线将从Step 7.1开始实现
-    print("[INFO] Pipeline not yet implemented - skeleton mode")
-    
-    # Record pipeline completion
-    # 记录流水线完成
-    if enable_auto_commit and session_manager:
-        # Check if configuration step should be committed
-        # 检查配置步骤是否应提交
-        if args.auto_commit and not args.dry_run:
-            # Auto-commit the configuration and setup files
-            # 自动提交配置和设置文件
-            try:
-                if git_helper:
-                    success = await git_helper.auto_commit_step(
-                        step_name="pipeline-setup",
-                        step_description=f"Pipeline setup for query: {args.query[:100]}",
-                        include_files=None,  # All files
-                        force_add=False
-                    )
-                    if success:
-                        print(f"[INFO] Auto-commit successful for pipeline setup")
-                    else:
-                        print(f"[WARNING] Auto-commit failed for pipeline setup")
-            except Exception as e:
-                print(f"[WARNING] Auto-commit exception: {e}")
+    try:
+        # Import the resume-enabled orchestrator
+        # 导入支持恢复的协调器
+        try:
+            from src.pipeline.orchestrator_resume import run_with_resume
+            resume_module_available = True
+        except ImportError as e:
+            print(f"[WARNING] Resume module not available: {e}")
+            from src.pipeline.orchestrator import PipelineOrchestrator
+            resume_module_available = False
         
-        await session_manager.record_step_completion(
-            step_id="pipeline-start",
-            status="completed",
-            metadata={"exit_message": "Pipeline skeleton executed"}
-        )
+        if resume_module_available and enable_resume:
+            # Use resume-enabled pipeline
+            # 使用支持恢复的流水线
+            print("[INFO] Using resume-enabled pipeline with task checkpointing")
+            
+            session, resume_manager = await run_with_resume(
+                query=args.query,
+                session_id=args.session_id or session_id,
+                max_projects=args.max_projects,
+                max_concurrent_non_ai=max_concurrent_non_ai,
+                max_concurrent_ai=max_concurrent_ai,
+                dry_run=args.dry_run,
+                resume=enable_resume,
+                use_enhanced_pipeline=True  # Always use enhanced pipeline for AI/non-AI control
+            )
+            
+            # Check if session resumed from checkpoint
+            # 检查是否从检查点恢复
+            if resume_manager and resume_manager.state:
+                completion_pct = resume_manager.get_completion_percentage()
+                next_index, completed_tasks = resume_manager.get_resume_point()
+                
+                if len(completed_tasks) > 0:
+                    print(f"[INFO] Resumed from checkpoint: {completion_pct:.1f}% complete")
+                    print(f"[INFO] Previously completed tasks: {', '.join(completed_tasks[:5])}" + 
+                          (f" and {len(completed_tasks)-5} more" if len(completed_tasks) > 5 else ""))
+            
+            status_str = session.status.value if hasattr(session.status, 'value') else str(session.status)
+            print(f"[INFO] Analysis completed with status: {status_str}")
+            
+            if session.report_path:
+                print(f"[INFO] Markdown report generated: {session.report_path}")
+            
+            # Auto-commit after successful pipeline execution
+            # 成功执行流水线后自动提交
+            if enable_auto_commit and session_manager and session.status == "COMPLETED":
+                await _auto_commit_step_if_enabled(
+                    git_helper, session_manager, session_id,
+                    step_id="pipeline-complete",
+                    step_name="Pipeline completion",
+                    step_description="Completed analysis pipeline with resume support",
+                    metadata={
+                        "duration_seconds": str(session.summary.total_duration_seconds if hasattr(session.summary, 'total_duration_seconds') else "0"),
+                        "projects_analyzed": str(session.summary.projects_analyzed if hasattr(session.summary, 'projects_analyzed') else "0"),
+                        "resume_used": str(enable_resume and len(completed_tasks) > 0)
+                    }
+                )
+            
+            return 0 if session.status in ["COMPLETED", "completed", SessionStatus.COMPLETED] else 1
+            
+        else:
+            # Fall back to original pipeline (without resume support)
+            # 回退到原始流水线（不支持恢复）
+            print("[INFO] Using standard pipeline (resume support not available)")
+            
+            from src.pipeline.orchestrator import PipelineOrchestrator
+            orchestrator = PipelineOrchestrator()
+            
+            # Override config if CLI arguments provided
+            # 如果提供了CLI参数，覆盖配置
+            if args.provider or args.model:
+                config = load_config()
+                if args.provider:
+                    config.ai.provider = args.provider
+                if args.model:
+                    config.ai.model = args.model
+                orchestrator = PipelineOrchestrator(config=config)
+            
+            session = await orchestrator.run(
+                query=args.query,
+                max_projects=args.max_projects,
+                dry_run=args.dry_run
+            )
+            
+            status_str = session.status.value if hasattr(session.status, 'value') else str(session.status)
+            print(f"[INFO] Analysis completed with status: {status_str}")
+            
+            if session.report_path:
+                print(f"[INFO] Markdown report generated: {session.report_path}")
+            
+            # Auto-commit after successful pipeline execution
+            # 成功执行流水线后自动提交
+            if enable_auto_commit and session_manager and session.status == "COMPLETED":
+                await _auto_commit_step_if_enabled(
+                    git_helper, session_manager, session_id,
+                    step_id="pipeline-complete",
+                    step_name="Pipeline completion",
+                    step_description="Completed analysis pipeline (standard mode)",
+                    metadata={
+                        "duration_seconds": str(session.summary.total_duration_seconds if hasattr(session.summary, 'total_duration_seconds') else "0"),
+                        "projects_analyzed": str(session.summary.projects_analyzed if hasattr(session.summary, 'projects_analyzed') else "0")
+                    }
+                )
+            
+            return 0 if session.status in ["COMPLETED", "completed", SessionStatus.COMPLETED] else 1
+            
+    except Exception as e:
+        print(f"[ERROR] Pipeline execution failed: {e}")
+        import traceback
+        traceback.print_exc()
         
-        # Generate session summary
-        # 生成会话总结
-        if not args.dry_run:
-            await session_manager.generate_summary()
-    
-    return 0
+        # Auto-commit for failed pipeline
+        # 失败的流水线自动提交
+        if enable_auto_commit and session_manager:
+            await _auto_commit_step_if_enabled(
+                git_helper, session_manager, session_id,
+                step_id="pipeline-failed",
+                step_name="Pipeline failure",
+                step_description="Pipeline execution failed",
+                status="failed",
+                metadata={"error": str(e)}
+            )
+        
+        return 1
 
 
 async def _auto_commit_step_if_enabled(

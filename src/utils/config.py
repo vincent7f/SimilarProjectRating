@@ -135,7 +135,7 @@ class AIConfig:
                     瞬态故障的最大重试次数。
     """
     provider: str = "ollama"
-    model: str = "llama3.2:latest"
+    model: str = "gemma4:26b-a4b-it-q4_K_M"
     api_base: str = "http://localhost:11434"
     api_key: str = ""
     fallback_enabled: bool = True
@@ -178,6 +178,44 @@ class AnalysisConfig:
     parallel_analysis: bool = True
     max_concurrent_analyses: int = 4
     skip_large_repos: bool = True
+
+
+@dataclass
+class ParallelConfig:
+    """Parallel execution and concurrency control configuration.
+
+    Controls the degree of parallelism for different types of tasks,
+    particularly distinguishing between AI-dependent and non-AI tasks.
+
+    并行执行和并发控制配置。
+控制不同类型任务的并行度，特别区分AI依赖和非AI任务。
+
+    Attributes:
+        ai_concurrent_limit: Maximum number of concurrently executing AI-dependent tasks.
+                             AI依赖任务的最大并发执行数量（默认：1）。
+        non_ai_concurrent_limit: Maximum number of concurrently executing non-AI tasks.
+                                 非AI任务的最大并发执行数量（默认：5）。
+        enable_parallel_ai: Whether to allow parallel execution of AI tasks.
+                            是否允许并行执行AI任务。
+        enable_parallel_non_ai: Whether to allow parallel execution of non-AI tasks.
+                                是否允许并行执行非AI任务。
+        ai_semaphore_timeout: Timeout for acquiring AI task semaphore (seconds).
+                              获取AI任务信号量的超时时间（秒）。
+        adaptive_scaling: Whether to dynamically adjust concurrency based on system load.
+                          是否根据系统负载动态调整并发度。
+        min_concurrent_tasks: Minimum concurrent tasks to maintain for non-AI operations.
+                              非AI操作保持的最小并发任务数。
+        max_concurrent_tasks: Maximum concurrent tasks allowed overall.
+                              允许的最大总并发任务数。
+    """
+    ai_concurrent_limit: int = 1  # Default: disable parallel AI execution / 默认：禁用AI并行执行
+    non_ai_concurrent_limit: int = 5  # Default: allow 5 parallel non-AI tasks / 默认：允许5个并行非AI任务
+    enable_parallel_ai: bool = False  # Default: disabled for AI tasks / 默认：AI任务禁用并行
+    enable_parallel_non_ai: bool = True  # Default: enabled for non-AI tasks / 默认：非AI任务启用并行
+    ai_semaphore_timeout: int = 300  # 5 minutes timeout / 5分钟超时
+    adaptive_scaling: bool = False
+    min_concurrent_tasks: int = 1
+    max_concurrent_tasks: int = 10
 
 
 @dataclass
@@ -359,6 +397,8 @@ class Config:
                报告输出和Markdown导出设置。
         cache: Local filesystem cache settings.
               本地文件系统缓存设置。
+        parallel: Parallel execution and concurrency control settings.
+                 并行执行和并发控制设置。
         _source_path: Original YAML file path (internal use).
                      原始YAML文件路径（内部使用）。
     """
@@ -369,6 +409,7 @@ class Config:
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     output: OutputConfig = field(default_factory=OutputConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
+    parallel: ParallelConfig = field(default_factory=ParallelConfig)
     _source_path: Optional[Path] = field(default=None, repr=False)
 
     @classmethod
