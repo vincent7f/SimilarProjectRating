@@ -6,9 +6,9 @@ A intelligent GitHub open-source project analysis and comparison tool.
 Users input natural language queries to search, analyze, score, and rank
 similar GitHub projects across multiple dimensions with AI recommendations.
 
-相似项目评分系统 - CLI入口。
-一个智能的GitHub开源项目分析与比较工具。用户输入自然语言查询，
-即可在多个维度上搜索、分析、评分和排名相似的GitHub项目，并获得AI推荐。
+相似项目评分系统 - CLI入口.
+一个智能的GitHub开源项目分析与比较工具.用户输入自然语言查询,
+即可在多个维度上搜索,分析,评分和排名相似的GitHub项目,并获得AI推荐.
 """
 
 import argparse
@@ -18,6 +18,14 @@ import logging
 import uuid
 from datetime import datetime
 from typing import Optional
+
+# Configuration imports
+try:
+    from src.utils.config import Config
+    CONFIG_AVAILABLE = True
+except ImportError:
+    CONFIG_AVAILABLE = False
+    print("[WARNING] Configuration module not available.")
 
 # Try to import session manager and git helper for auto-commit functionality
 # 尝试导入会话管理器和git助手用于自动提交功能
@@ -36,23 +44,23 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
     Parses and validates all CLI options including query, output format,
     AI provider selection, and verbosity controls.
 
-    解析命令行参数。
-    解析并验证所有CLI选项，包括查询、输出格式、AI提供商选择和详细程度控制。
+    解析命令行参数.
+    解析并验证所有CLI选项,包括查询,输出格式,AI提供商选择和详细程度控制.
 
     Args:
         argv: Argument list (defaults to sys.argv[1:]).
-              参数列表（默认为sys.argv[1:]）。
+              参数列表(默认为sys.argv[1:]).
 
     Returns:
         Parsed and validated namespace of arguments.
-        解析和验证后的参数命名空间。
+        解析和验证后的参数命名空间.
     """
     parser = argparse.ArgumentParser(
         prog="similar-project-rating",
         description=(
             "GitHub Similar Project Rating System - Analyze and compare "
             "open-source projects across multiple dimensions.\n"
-            "GitHub相似项目评分系统 - 在多个维度上分析和比较开源项目。"
+            "GitHub相似项目评分系统 - 在多个维度上分析和比较开源项目."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
@@ -68,75 +76,75 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
         ),
     )
 
-    # Required: user search query / 必需：用户搜索查询
+    # Required: user search query / 必需:用户搜索查询
     parser.add_argument(
         "query",
         type=str,
         help="Natural language query describing the desired project functionality. "
-             "描述期望项目功能的自然语言查询。",
+             "描述期望项目功能的自然语言查询.",
     )
 
-    # Optional: configuration / 可选：配置相关
+    # Optional: configuration / 可选:配置相关
     parser.add_argument(
         "-c", "--config",
         type=str,
         default=None,
         help="Path to custom configuration file (default: configs/config.yaml). "
-             "自定义配置文件路径（默认：configs/config.yaml）。",
+             "自定义配置文件路径(默认:configs/config.yaml).",
     )
     parser.add_argument(
         "-n", "--max-projects",
         type=int,
         default=20,
         help="Maximum number of projects to analyze (default: 20). "
-             "分析的最大项目数量（默认：20）。",
+             "分析的最大项目数量(默认:20).",
     )
     parser.add_argument(
         "-o", "--output",
         type=str,
         default="./data/results/",
         help="Output directory for reports (default: ./data/results/). "
-             "报告的输出目录（默认：./data/results/）。",
+             "报告的输出目录(默认:./data/results/).",
     )
 
-    # Optional: AI provider settings / 可选：AI提供商设置
+    # Optional: AI provider settings / 可选:AI提供商设置
     parser.add_argument(
         "-p", "--provider",
         type=str,
         choices=["ollama", "openai", "litellm"],
         default=None,
         help="AI provider to use (default: from config or ollama). "
-             "使用的AI提供商（默认：从配置或ollama）。",
+             "使用的AI提供商(默认:从配置或ollama).",
     )
     parser.add_argument(
         "-m", "--model",
         type=str,
         default=None,
         help="AI model name (default: from config). "
-             "AI模型名称（默认：从配置）。",
+             "AI模型名称(默认:从配置).",
     )
 
-    # Optional: behavior controls / 可选：行为控制
+    # Optional: behavior controls / 可选:行为控制
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         default=False,
         help="Enable verbose/debug output. "
-             "启用详细/调试输出。",
+             "启用详细/调试输出.",
     )
     parser.add_argument(
         "--no-cache",
         action="store_true",
         default=False,
         help="Disable caching for all API calls. "
-             "禁用所有API调用的缓存。",
+             "禁用所有API调用的缓存.",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
         default=False,
         help="Search only without performing full analysis (preview mode). "
-             "仅搜索而不执行完整分析（预览模式）。",
+             "仅搜索而不执行完整分析(预览模式).",
     )
     
     # Auto-commit functionality for step completion
@@ -147,14 +155,14 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
         default=False,
         help="Automatically create git commits after each successful step. "
              "Each commit includes step identifier and description. "
-             "在每个成功步骤后自动创建git提交。每个提交包含步骤标识符和描述。",
+             "在每个成功步骤后自动创建git提交.每个提交包含步骤标识符和描述.",
     )
     parser.add_argument(
         "--no-auto-commit",
         action="store_true",
         default=False,
         help="Disable auto-commit even if configured in settings. "
-             "即使设置中启用了也禁用自动提交。",
+             "即使设置中启用了也禁用自动提交.",
     )
     parser.add_argument(
         "--use-worktrees",
@@ -162,7 +170,7 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
         default=False,
         help="Use git worktrees for parallel step execution. "
              "Each major step runs in its own worktree. "
-             "使用git worktrees进行并行步骤执行。每个主要步骤在自己的worktree中运行。",
+             "使用git worktrees进行并行步骤执行.每个主要步骤在自己的worktree中运行.",
     )
     parser.add_argument(
         "--session-id",
@@ -170,7 +178,7 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
         default=None,
         help="Identifier for this analysis session (used in commit messages). "
              "If not provided, auto-generated timestamp will be used. "
-             "此分析会话的标识符（用于提交消息）。如未提供，将使用自动生成的时间戳。",
+             "此分析会话的标识符(用于提交消息).如未提供,将使用自动生成的时间戳.",
     )
     
     # Resume and concurrency functionality for task recovery and parallel execution
@@ -181,38 +189,144 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
         default=False,
         help="Enable session resumption from checkpoint. "
              "Requires --session-id of an existing session. "
-             "从检查点启用会话恢复。需要现有会话的--session-id。",
+             "从检查点启用会话恢复.需要现有会话的--session-id.",
     )
     parser.add_argument(
         "--no-resume",
         action="store_true",
         default=False,
         help="Disable resume functionality (force new session). "
-             "禁用恢复功能（强制新会话）。",
+             "禁用恢复功能(强制新会话).",
     )
     parser.add_argument(
         "--max-concurrent-non-ai",
         type=int,
         default=5,
         help="Maximum concurrent non-AI dependent tasks (default: 5). "
-             "非AI依赖任务的最大并发数（默认：5）。",
+             "非AI依赖任务的最大并发数(默认:5).",
     )
     parser.add_argument(
         "--max-concurrent-ai",
         type=int,
         default=1,
         help="Maximum concurrent AI-dependent tasks (default: 1). "
-             "AI依赖任务的最大并发数（默认：1）。",
+             "AI依赖任务的最大并发数(默认:1).",
     )
     parser.add_argument(
         "--disable-parallel-ai",
         action="store_true",
         default=False,
         help="Disable parallel execution for AI tasks (force serial). "
-             "禁用AI任务的并行执行（强制串行）。",
+             "禁用AI任务的并行执行(强制串行).",
+    )
+
+    # Optional: GitReverse settings / 可选:GitReverse设置
+    parser.add_argument(
+        "--use-gitreverse",
+        action="store_true",
+        default=None,
+        help="Use GitReverse.com for project prompts instead of code download. "
+             "使用GitReverse.com获取项目prompt而不是下载代码.",
+    )
+    parser.add_argument(
+        "--disable-gitreverse",
+        action="store_true",
+        default=False,
+        help="Disable GitReverse.com analysis (force traditional code analysis). "
+             "禁用GitReverse.com分析(强制传统代码分析).",
+    )
+    parser.add_argument(
+        "--no-gitreverse-fallback",
+        action="store_true",
+        default=False,
+        help="Disable fallback to code analysis when GitReverse fails. "
+             "GitReverse失败时禁用回退到代码分析.",
     )
 
     return parser.parse_args(argv)
+
+
+def load_config(config_path: Optional[str] = None) -> Config:
+    """Load configuration from YAML file with fallback to defaults.
+
+    从YAML文件加载配置,回退到默认值.
+
+    Args:
+        config_path: Path to config file (optional).
+                     配置文件路径(可选).
+
+    Returns:
+        Config instance.
+        Config实例.
+    """
+    if not CONFIG_AVAILABLE:
+        raise ImportError("Configuration module not available.")
+    
+    try:
+        # Use provided path or default to configs/config.yaml
+        # 使用提供的路径或默认为configs/config.yaml
+        if config_path:
+            path = config_path
+        else:
+            path = "configs/config.yaml"
+        
+        return Config.from_yaml(path)
+    except Exception as e:
+        print(f"[WARNING] Failed to load config from {config_path}: {e}")
+        # Return default config
+        # 返回默认配置
+        return Config()
+
+
+def update_config_with_args(config: Config, args: argparse.Namespace) -> Config:
+    """Update configuration based on command-line arguments.
+
+    基于命令行参数更新配置.
+
+    Args:
+        config: Original configuration object.
+               原始配置对象.
+        args: Parsed command-line arguments.
+             解析后的命令行参数.
+
+    Returns:
+        Updated configuration.
+        更新后的配置.
+    """
+    # Update AI provider settings if specified
+    # 如果指定了AI提供商设置,则更新
+    if args.provider:
+        config.ai.provider = args.provider
+    if args.model:
+        config.ai.model = args.model
+    
+    # Update GitReverse settings based on CLI arguments
+    # 基于CLI参数更新GitReverse设置
+    if args.disable_gitreverse:
+        # Explicitly disable GitReverse / 显式禁用GitReverse
+        config.gitreverse.enabled = False
+        print("[INFO] GitReverse analysis: DISABLED (forced by --disable-gitreverse)")
+    elif args.use_gitreverse is not None:
+        # Explicitly enable GitReverse / 显式启用GitReverse
+        config.gitreverse.enabled = True
+        print("[INFO] GitReverse analysis: ENABLED (forced by --use-gitreverse)")
+    # If neither is specified, config file value is used
+    # 如果两者都未指定,使用配置文件中的值
+    
+    # Update fallback setting / 更新回退设置
+    if args.no_gitreverse_fallback:
+        config.gitreverse.fallback_to_code = False
+        print("[INFO] GitReverse fallback: DISABLED (--no-gitreverse-fallback)")
+    
+    # Update parallel settings / 更新并行设置
+    if args.max_concurrent_ai:
+        config.parallel.ai_concurrent_limit = args.max_concurrent_ai
+    if args.disable_parallel_ai:
+        config.parallel.enable_parallel_ai = False
+    if args.max_concurrent_non_ai:
+        config.parallel.non_ai_concurrent_limit = args.max_concurrent_non_ai
+    
+    return config
 
 
 async def async_main(args: argparse.Namespace) -> int:
@@ -230,26 +344,26 @@ async def async_main(args: argparse.Namespace) -> int:
     9. Auto-commit step-by-step if enabled
     10. Task checkpointing and resume support (new)
 
-    异步执行主分析流水线。
-    编排完整的工作流程：
+    异步执行主分析流水线.
+    编排完整的工作流程:
     1. 初始化配置和日志
     2. 通过AI生成搜索关键词
     3. 在GitHub上搜索候选项目
     4. 通过AI相关性检查过滤不相关项目
-    5. 并行分析过滤后的项目（代码/社区/成熟度）
+    5. 并行分析过滤后的项目(代码/社区/成熟度)
     6. 计算多维分数
     7. 排名并生成推荐
     8. 输出报告和会话总结
-    9. 如已启用，自动提交每个步骤
-    10. 任务检查点和恢复支持（新增）
+    9. 如已启用,自动提交每个步骤
+    10. 任务检查点和恢复支持(新增)
 
     Args:
         args: Parsed command-line arguments.
-              解析后的命令行参数。
+              解析后的命令行参数.
 
     Returns:
         Exit code: 0 for success, non-zero for failure.
-        退出码：0表示成功，非零表示失败。
+        退出码:0表示成功,非零表示失败.
     """
     # Setup auto-commit configuration
     # 设置自动提交配置
@@ -267,6 +381,16 @@ async def async_main(args: argparse.Namespace) -> int:
     # 设置并行执行配置
     max_concurrent_ai = 1 if args.disable_parallel_ai else args.max_concurrent_ai
     max_concurrent_non_ai = args.max_concurrent_non_ai
+    
+    # Load and update configuration
+    # 加载和更新配置
+    try:
+        config = load_config(args.config)
+        config = update_config_with_args(config, args)
+    except Exception as e:
+        print(f"[WARNING] Failed to load/update config: {e}")
+        # Use minimal default config / 使用最小默认配置
+        config = Config() if CONFIG_AVAILABLE else None
     
     if enable_auto_commit:
         print("[INFO] Auto-commit mode: ENABLED")
@@ -289,7 +413,7 @@ async def async_main(args: argparse.Namespace) -> int:
         print("[INFO] Resume mode: DISABLED")
     
     # Initialize session manager for step tracking if auto-commit enabled
-    # 如果启用自动提交，初始化会话管理器用于步骤追踪
+    # 如果启用自动提交,初始化会话管理器用于步骤追踪
     session_manager = None
     if enable_auto_commit and HAS_AUTO_COMMIT:
         try:
@@ -301,7 +425,7 @@ async def async_main(args: argparse.Namespace) -> int:
             enable_auto_commit = False
     
     # Initialize git helper for auto-commit if enabled
-    # 如果启用，初始化git助手用于自动提交
+    # 如果启用,初始化git助手用于自动提交
     git_helper = None
     if enable_auto_commit and HAS_AUTO_COMMIT:
         try:
@@ -338,6 +462,13 @@ async def async_main(args: argparse.Namespace) -> int:
         print("[INFO] Mode: dry-run (search only)")
     print(f"[INFO] Session ID: {session_id}")
     print(f"[INFO] Parallel settings: AI tasks={max_concurrent_ai}, Non-AI tasks={max_concurrent_non_ai}")
+    # GitReverse status / GitReverse状态
+    if config and hasattr(config, 'gitreverse'):
+        gitreverse_status = "ENABLED" if config.gitreverse.enabled else "DISABLED"
+        fallback_status = "ENABLED" if config.gitreverse.fallback_to_code else "DISABLED"
+        print(f"[INFO] GitReverse analysis: {gitreverse_status} (fallback: {fallback_status})")
+    else:
+        print("[INFO] GitReverse analysis: CONFIG NOT AVAILABLE")
     
     try:
         # Import the resume-enabled orchestrator
@@ -363,7 +494,8 @@ async def async_main(args: argparse.Namespace) -> int:
                 max_concurrent_ai=max_concurrent_ai,
                 dry_run=args.dry_run,
                 resume=enable_resume,
-                use_enhanced_pipeline=True  # Always use enhanced pipeline for AI/non-AI control
+                use_enhanced_pipeline=True,  # Always use enhanced pipeline for AI/non-AI control
+                config=config  # Pass configuration including GitReverse settings / 传递包含GitReverse设置的配置
             )
             
             # Check if session resumed from checkpoint
@@ -402,14 +534,14 @@ async def async_main(args: argparse.Namespace) -> int:
             
         else:
             # Fall back to original pipeline (without resume support)
-            # 回退到原始流水线（不支持恢复）
+            # 回退到原始流水线(不支持恢复)
             print("[INFO] Using standard pipeline (resume support not available)")
             
             from src.pipeline.orchestrator import PipelineOrchestrator
             orchestrator = PipelineOrchestrator()
             
             # Override config if CLI arguments provided
-            # 如果提供了CLI参数，覆盖配置
+            # 如果提供了CLI参数,覆盖配置
             if args.provider or args.model:
                 config = load_config()
                 if args.provider:
@@ -524,16 +656,16 @@ def main(argv: Optional[list] = None) -> int:
     Synchronous wrapper that sets up and tears down the async event loop
     around the main pipeline execution.
 
-    同步入口函数，包装异步main函数。
-    在主流水线执行周围设置和清理异步事件循环。
+    同步入口函数,包装异步main函数.
+    在主流水线执行周围设置和清理异步事件循环.
 
     Args:
         argv: Command-line arguments (defaults to sys.argv[1:]).
-              命令行参数（默认为sys.argv[1:]）。
+              命令行参数(默认为sys.argv[1:]).
 
     Returns:
         Exit code passed from async_main.
-        从async_main传递的退出码。
+        从async_main传递的退出码.
     """
     args = parse_args(argv)
     return asyncio.run(async_main(args))

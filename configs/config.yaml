@@ -102,6 +102,17 @@ output:
   archive_old_reports: true              # Compress reports older than 30 days / 压缩超过30天的报告
 
 # ---------------------------------------------------------------------------
+# GitReverse Settings / GitReverse设置
+# ---------------------------------------------------------------------------
+gitreverse:
+  base_url: "https://gitreverse.com"
+  timeout_seconds: 30
+  enabled: true               # Use GitReverse instead of code analysis / 使用GitReverse替代代码分析
+  fallback_to_code: true     # Fallback to traditional code analysis if GitReverse fails / GitReverse失败时回退到传统代码分析
+  max_retries: 3
+  cache_duration_seconds: 3600  # Cache GitReverse prompts / 缓存GitReverse prompt
+
+# ---------------------------------------------------------------------------
 # Parallel Execution Settings / 并行执行设置
 # ---------------------------------------------------------------------------
 parallel:

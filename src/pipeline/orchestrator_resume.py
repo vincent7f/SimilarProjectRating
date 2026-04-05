@@ -5,8 +5,8 @@ Pipeline Orchestrator with Resume Support - Enhanced version with checkpointing.
 Extends the standard orchestrator with task checkpointing, parallel execution
 control, and session resumption capabilities.
 
-支持恢复的流水线协调器 - 带有检查点功能的增强版本。
-扩展标准协调器，提供任务检查点、并行执行控制和会话恢复能力。
+支持恢复的流水线协调器 - 带有检查点功能的增强版本.
+扩展标准协调器,提供任务检查点,并行执行控制和会话恢复能力.
 """
 
 import asyncio
@@ -73,14 +73,22 @@ class PipelineOrchestratorWithResume(PipelineOrchestrator):
         
         # Replace analysis pipeline with enhanced version if requested
         if use_enhanced_pipeline and config:
-            logger.info(f"Using enhanced analysis pipeline with AI={max_concurrent_ai}, Non-AI={max_concurrent_non_ai}")
-            self.analysis_pipeline = create_enhanced_pipeline(
-                config=self.config,
-                github_client=self.github,
-                code_analyzer=None,
-                community_analyzer=None,
-                maturity_analyzer=None
-            )
+            # Check if GitReverse is enabled and we should use adaptive pipeline
+            # 检查是否启用了GitReverse且应该使用自适应流水线
+            use_gitreverse = hasattr(config, 'gitreverse') and config.gitreverse.enabled
+            
+            if use_gitreverse:
+                logger.info(f"Using ADAPTIVE analysis pipeline (GitReverse enabled) with AI={max_concurrent_ai}, Non-AI={max_concurrent_non_ai}")
+                self.analysis_pipeline = self._create_adaptive_pipeline(config)
+            else:
+                logger.info(f"Using enhanced analysis pipeline (no GitReverse) with AI={max_concurrent_ai}, Non-AI={max_concurrent_non_ai}")
+                self.analysis_pipeline = create_enhanced_pipeline(
+                    config=self.config,
+                    github_client=self.github,
+                    code_analyzer=None,
+                    community_analyzer=None,
+                    maturity_analyzer=None
+                )
         else:
             logger.info("Using standard analysis pipeline")
         
@@ -476,6 +484,46 @@ class PipelineOrchestratorWithResume(PipelineOrchestrator):
         session.summary = summary
         return session
 
+    def _create_adaptive_pipeline(self, config: Any) -> Any:
+        """Create adaptive analysis pipeline based on GitReverse configuration.
+        
+        基于GitReverse配置创建自适应分析流水线.
+        
+        Args:
+            config: Configuration object.
+                    配置对象.
+            
+        Returns:
+            AdaptiveAnalysisPipeline instance.
+            AdaptiveAnalysisPipeline实例.
+        """
+        try:
+            from src.analysis.adaptive_pipeline import AdaptiveAnalysisPipeline
+            
+            # Create adaptive pipeline
+            # 创建自适应流水线
+            return AdaptiveAnalysisPipeline(
+                config=config,
+                github_client=self.github,
+                parallel_analysis=True,
+                max_concurrent=self.max_concurrent_non_ai  # Use non-AI concurrency for overall limit
+            )
+        except ImportError as e:
+            logger.error(
+                "module=orchestrator", operation="adaptive_pipeline_import_error",
+                params={"error": str(e)},
+            )
+            # Fall back to enhanced pipeline
+            # 回退到增强流水线
+            from src.analysis.pipeline_parallel import create_enhanced_pipeline
+            return create_enhanced_pipeline(
+                config=config,
+                github_client=self.github,
+                code_analyzer=None,
+                community_analyzer=None,
+                maturity_analyzer=None
+            )
+
 
 # Convenience functions for command line usage
 async def run_with_resume(
@@ -486,10 +534,27 @@ async def run_with_resume(
     max_concurrent_ai: int = 1,
     dry_run: bool = False,
     resume: bool = True,
-    use_enhanced_pipeline: bool = True
+    use_enhanced_pipeline: bool = True,
+    config: Optional[Any] = None
 ) -> Tuple[AnalysisSession, Optional[ResumeManager]]:
-    """Convenience function to run pipeline with resume support."""
+    """Convenience function to run pipeline with resume support.
+    
+    Args:
+        query: User search query.
+        session_id: Existing session ID for resumption.
+        max_projects: Maximum projects to analyze.
+        max_concurrent_non_ai: Maximum concurrent non-AI tasks.
+        max_concurrent_ai: Maximum concurrent AI tasks.
+        dry_run: Dry run mode.
+        resume: Enable resume from checkpoint.
+        use_enhanced_pipeline: Use enhanced pipeline with AI/non-AI concurrency.
+        config: Configuration object (optional).
+        
+    Returns:
+        Tuple of (AnalysisSession, ResumeManager)
+    """
     orchestrator = PipelineOrchestratorWithResume(
+        config=config,
         max_concurrent_non_ai=max_concurrent_non_ai,
         max_concurrent_ai=max_concurrent_ai,
         enable_resume=resume,
