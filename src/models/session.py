@@ -239,6 +239,8 @@ class AnalysisSession:
               所有操作按时间顺序排列的日志条目。
         summary: End-of-run summary (generated after completion).
                运行结束后总结（完成后生成）。
+        report_path: Path to the generated Markdown report file.
+                    生成的Markdown报告文件路径。
     """
     session_id: str = ""
     query: str = ""
@@ -253,3 +255,4 @@ class AnalysisSession:
     ranked_results: List[Any] = field(default_factory=list)
     logs: List[LogEntry] = field(default_factory=list)
     summary: Optional[SessionSummary] = None
+    report_path: Optional[str] = None

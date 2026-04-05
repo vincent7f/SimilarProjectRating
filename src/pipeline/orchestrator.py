@@ -33,6 +33,7 @@ from src.search.project_filter import ProjectFilter
 from src.ai.llm_client import LLMClient
 from src.ai.recommender import Recommender
 from src.ai.explainer import Explainer
+from src.report.markdown_exporter import MarkdownExporter, export_results_as_markdown
 from src.storage.database import Database
 from src.utils.config import Config, load_config
 from src.utils.logger import setup_logger, get_logger
@@ -84,6 +85,11 @@ class PipelineOrchestrator:
         self.ranker = RankingEngine()
         self.recommender = Recommender(llm_client=self.llm_client)
         self.explainer = Explainer(llm_client=self.llm_client)
+        self.markdown_exporter = MarkdownExporter(
+            output_dir=self.config.output.results_dir,
+            bilingual_output=self.config.output.bilingual_reports,
+            include_json_metadata=self.config.output.include_json_metadata
+        )
 
         # Logging / 日志
         self.app_logger = setup_logger(
@@ -195,6 +201,27 @@ class PipelineOrchestrator:
 
             # Step 8: Report / 步骤8：报告
             explanation = await self.explainer.explain_comparison(recommendations[:10], query)
+            
+            # MANDATORY: Export to Markdown file / 强制：导出为Markdown文件
+            self._log_step(logs, "markdown_export", "start")
+            total_duration = (datetime.now(timezone.utc) - start_time).total_seconds()
+            
+            # Export ranked results as Markdown
+            markdown_filepath = self.markdown_exporter.export_ranked_projects(
+                query=query,
+                ranked=ranked,
+                session_id=session_id,
+                duration_seconds=total_duration,
+                explanation=explanation,
+                format_type="detailed"  # Default to detailed Markdown
+            )
+            
+            # Store the report path in session
+            session.report_path = str(markdown_filepath)
+            self._log_step(logs, "markdown_export", "complete",
+                          results={"filepath": str(markdown_filepath),
+                                  "format": "markdown",
+                                  "size_kb": markdown_filepath.stat().st_size // 1024 if markdown_filepath.exists() else 0})
 
             # Save to database / 保存到数据库
             self.db.initialize_schema()

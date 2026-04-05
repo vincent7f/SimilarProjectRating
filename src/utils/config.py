@@ -291,6 +291,49 @@ class CacheConfig:
 
 
 @dataclass
+class OutputConfig:
+    """Output and report generation configuration parameters.
+    
+    MANDATORY: All project outputs must be Markdown files according to requirements.
+    Controls report formatting, output location, language options, and file naming.
+    
+    输出和报告生成配置参数。
+    强制性：根据要求，所有项目输出必须是Markdown文件。
+    控制报告格式、输出位置、语言选项和文件命名。
+    
+    Attributes:
+        results_dir: Directory for saving Markdown report files.
+                    保存Markdown报告文件的目录。
+        format: Output format (always "markdown").
+                输出格式（始终为"markdown"）。
+        bilingual_reports: Include both English and Chinese in reports.
+                          报告中包含英文和中文。
+        include_json_metadata: Save JSON metadata alongside Markdown files.
+                               同时保存JSON元数据与Markdown文件。
+        auto_open: Automatically open report after generation.
+                   生成后自动打开报告。
+        report_templates: Which report templates to generate.
+                          生成哪些报告模板。
+        filename_format: Pattern for naming output files.
+                         输出文件命名模式。
+        archive_old_reports: Compress reports older than retention period.
+                             压缩超过保留期的报告。
+    """
+    results_dir: str = "./data/results"
+    format: str = "markdown"  # Always markdown / 始终为markdown
+    bilingual_reports: bool = True
+    include_json_metadata: bool = True
+    auto_open: bool = False
+    report_templates: Dict[str, bool] = field(default_factory=lambda: {
+        "detailed": True,
+        "summary": True,
+        "comparison": True,
+    })
+    filename_format: str = "analysis_{query}_{timestamp}.md"
+    archive_old_reports: bool = True
+
+
+@dataclass
 class Config:
     """Root configuration container holding all sub-configurations.
 
@@ -312,6 +355,8 @@ class Config:
                 多维评分系统设置。
         logging: Structured logging system settings.
                 结构化日志系统设置。
+        output: Report output and Markdown export settings.
+               报告输出和Markdown导出设置。
         cache: Local filesystem cache settings.
               本地文件系统缓存设置。
         _source_path: Original YAML file path (internal use).
@@ -322,6 +367,7 @@ class Config:
     analysis: AnalysisConfig = field(default_factory=AnalysisConfig)
     scoring: ScoringConfig = field(default_factory=ScoringConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
+    output: OutputConfig = field(default_factory=OutputConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
     _source_path: Optional[Path] = field(default=None, repr=False)
 

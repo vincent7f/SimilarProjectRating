@@ -84,6 +84,24 @@ logging:
                                  # 每次会话日志文件名前缀
 
 # ---------------------------------------------------------------------------
+# Output & Report Settings / 输出与报告设置
+# ---------------------------------------------------------------------------
+output:
+  # Markdown export - MANDATORY: all project outputs must be Markdown files
+  # Markdown导出 - 强制性：所有项目输出必须是Markdown文件
+  results_dir: "./data/results"          # Output directory for Markdown reports / Markdown报告输出目录
+  format: "markdown"                     # Output format (always markdown) / 输出格式（始终为markdown）
+  bilingual_reports: true                # Include both English and Chinese in reports / 报告中包含英文和中文
+  include_json_metadata: true            # Save JSON metadata alongside Markdown / 同时保存JSON元数据
+  auto_open: false                       # Automatically open after generation / 生成后自动打开
+  report_templates:                      # Report template options / 报告模板选项
+    detailed: true                       # Include detailed analysis report / 包含详细分析报告
+    summary: true                        # Include executive summary / 包含执行摘要
+    comparison: true                     # Include comparison table / 包含比较表
+  filename_format: "analysis_{query}_{timestamp}.md"  # Filename pattern / 文件名模式
+  archive_old_reports: true              # Compress reports older than 30 days / 压缩超过30天的报告
+
+# ---------------------------------------------------------------------------
 # Cache Settings / 缓存设置
 # ---------------------------------------------------------------------------
 cache:
