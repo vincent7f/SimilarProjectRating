@@ -291,8 +291,15 @@ class GitHubClient:
                 ]
                 metrics["contributor_count"] = _extract_link_total(resp)
         except Exception as e:
-            logger.debug("module=search", operation="contributors_fetch_failed",
-                          params={"error": str(e)})
+            logger.debug(
+                "Contributors fetch failed for %s/%s",
+                owner, repo,
+                extra={
+                    "module": "search", 
+                    "operation": "contributors_fetch_failed",
+                    "params": {"error": str(e)}
+                }
+            )
 
         # Basic repo stats
         try:

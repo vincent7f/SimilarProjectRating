@@ -88,8 +88,15 @@ class LLMClient:
                      要添加的已初始化提供商实例.
         """
         self._providers[provider.name.lower()] = provider
-        logger.info("module=ai", operation="register_provider",
-                    params={"name": provider.name})
+        logger.info(
+                "Registered provider %s",
+                provider.name,
+                extra={
+                    "module": "ai", 
+                    "operation": "register_provider",
+                    "params": {"name": provider.name}
+                }
+            )
 
         # Set as active if none set yet / 如果尚未设置则设为活跃
         if self._active_provider is None:
@@ -111,11 +118,25 @@ class LLMClient:
         name_lower = name.lower()
         if name_lower in self._providers:
             self._active_provider = self._providers[name_lower]
-            logger.info("module=ai", operation="set_active_provider",
-                        params={"name": name})
+            logger.info(
+                "Set active provider to %s",
+                name,
+                extra={
+                    "module": "ai", 
+                    "operation": "set_active_provider",
+                    "params": {"name": name}
+                }
+            )
             return True
-        logger.warning("module=ai", operation="set_active_provider_failed",
-                       params={"requested": name, "available": list(self._providers.keys())})
+        logger.warning(
+                "Failed to set active provider to %s. Available: %s",
+                name, list(self._providers.keys()),
+                extra={
+                    "module": "ai", 
+                    "operation": "set_active_provider_failed",
+                    "params": {"requested": name, "available": list(self._providers.keys())}
+                }
+            )
         return False
 
     def get_active_provider_name(self) -> str:
@@ -408,7 +429,13 @@ class LLMClient:
         if self._providers:
             return
 
-        logger.info("module=ai", operation="auto_discover_providers")
+        logger.info(
+                "Auto-discovering providers",
+                extra={
+                    "module": "ai", 
+                    "operation": "auto_discover_providers"
+                }
+            )
 
         # Import lazily to avoid circular deps / 延迟导入以避免循环依赖
         try:
@@ -420,8 +447,15 @@ class LLMClient:
             )
             self.register_provider(ollama)
         except Exception as e:
-            logger.warning("module=ai", operation="auto_discover_ollama_failed",
-                           params={"error": str(e)})
+            logger.warning(
+                "Failed to auto-discover Ollama provider: %s",
+                str(e),
+                extra={
+                    "module": "ai", 
+                    "operation": "auto_discover_ollama_failed",
+                    "params": {"error": str(e)}
+                }
+            )
 
 
 __all__ = ["LLMClient"]

@@ -183,8 +183,11 @@ class AnalysisPipeline:
         try:
             return await self.code_analyzer.analyze(repo)
         except Exception as e:
-            logger.error("module=pipeline", operation="code_error",
-                          params={"repo": repo.full_name, "error": str(e)})
+            logger.error(
+                "Code analysis failed for repo %s",
+                repo.full_name,
+                extra={"module": "pipeline", "operation": "code_error", "params": {"repo": repo.full_name, "error": str(e)}}
+            )
             return CodeQualityMetrics(overall_score=0.0, errors=[str(e)])
 
     async def _safe_community_analysis(self, repo: Repository) -> CommunityMetrics:
@@ -192,8 +195,11 @@ class AnalysisPipeline:
         try:
             return await self.community_analyzer.analyze(repo)
         except Exception as e:
-            logger.error("module=pipeline", operation="community_error",
-                          params={"repo": repo.full_name, "error": str(e)})
+            logger.error(
+                "Community analysis failed for repo %s",
+                repo.full_name,
+                extra={"module": "pipeline", "operation": "community_error", "params": {"repo": repo.full_name, "error": str(e)}}
+            )
             return CommunityMetrics(overall_score=0.0, errors=[str(e)])
 
     async def _safe_maturity_analysis(self, repo: Repository) -> MaturityMetrics:
@@ -201,8 +207,11 @@ class AnalysisPipeline:
         try:
             return await self.maturity_analyzer.analyze(repo)
         except Exception as e:
-            logger.error("module=pipeline", operation="maturity_error",
-                          params={"repo": repo.full_name, "error": str(e)})
+            logger.error(
+                "Maturity analysis failed for repo %s",
+                repo.full_name,
+                extra={"module": "pipeline", "operation": "maturity_error", "params": {"repo": repo.full_name, "error": str(e)}}
+            )
             return MaturityMetrics(overall_score=0.0, errors=[str(e)])
 
     # ------------------------------------------------------------------

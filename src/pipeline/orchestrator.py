@@ -127,6 +127,9 @@ class PipelineOrchestrator:
         )
 
         try:
+            # Initialize database schema / 初始化数据库模式
+            self.db.initialize_schema()
+            
             # Step 1: Keywords / 步骤1:关键词
             self._log_step(logs, "keyword_generation", "start")
             keyword_groups: List[KeywordGroup] = await self.keyword_gen.generate(query)
@@ -224,7 +227,6 @@ class PipelineOrchestrator:
                                   "size_kb": markdown_filepath.stat().st_size // 1024 if markdown_filepath.exists() else 0})
 
             # Save to database / 保存到数据库
-            self.db.initialize_schema()
             self.db.create_session(session_id, query)
             for ar in analysis_results:
                 self.db.save_analysis_result({
@@ -275,8 +277,15 @@ class PipelineOrchestrator:
             self.db.update_session_status(session_id, SessionStatus.COMPLETED.value,
                                         {"query": query, "status": "completed"})
 
-            logger.info("module=pipeline", operation="pipeline_complete",
-                       params={"session_id": session_id, "duration_s": total_duration})
+            logger.info(
+                "Pipeline completed for session %s",
+                session_id,
+                extra={
+                    "module": "pipeline", 
+                    "operation": "pipeline_complete",
+                    "params": {"session_id": session_id, "duration_s": total_duration}
+                }
+            )
 
             return session
 
@@ -290,7 +299,18 @@ class PipelineOrchestrator:
                 failures=[{"issue": "Pipeline execution error",
                             "cause": str(e), "fix": "Check configuration and API access"}],
             )
-            self.db.update_session_status(session_id, SessionStatus.FAILED.value)
+            try:
+                self.db.update_session_status(session_id, SessionStatus.FAILED.value)
+            except Exception as db_error:
+                logger.error(
+                    "Failed to update session status in database: %s",
+                    str(db_error),
+                    extra={
+                        "module": "pipeline",
+                        "operation": "session_status_update_failed",
+                        "params": {"session_id": session_id, "error": str(db_error)}
+                    }
+                )
             return session
 
     @staticmethod

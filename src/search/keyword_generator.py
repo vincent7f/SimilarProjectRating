@@ -132,11 +132,16 @@ class KeywordGenerator:
 
         except json.JSONDecodeError as e:
             logger.error(
-                "module=search", operation="keyword_json_parse_error",
-                params={
-                    "error": str(e),
-                    "raw_preview": raw_response[:200] if 'raw_response' in dir() else "",
-                },
+                "Keyword JSON parse error for query %s",
+                query,
+                extra={
+                    "module": "search", 
+                    "operation": "keyword_json_parse_error",
+                    "params": {
+                        "error": str(e),
+                        "raw_preview": raw_response[:200] if 'raw_response' in dir() else "",
+                    },
+                }
             )
             # Fallback: create single group from query / 后备:从查询创建单个组
             return [
@@ -150,8 +155,13 @@ class KeywordGenerator:
 
         except Exception as e:
             logger.error(
-                "module=search", operation="keyword_generation_error",
-                params={"error": str(e), "query": query},
+                "Keyword generation error for query %s",
+                query,
+                extra={
+                    "module": "search", 
+                    "operation": "keyword_generation_error",
+                    "params": {"error": str(e), "query": query},
+                }
             )
             raise
 

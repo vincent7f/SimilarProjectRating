@@ -32,9 +32,12 @@ except ImportError:
 try:
     from src.utils.session_manager import SessionManager, StepStatus
     from src.utils.git_helper import GitHelper, auto_commit_current_step
+    from src.models.session import SessionStatus
     HAS_AUTO_COMMIT = True
+    HAS_SESSION_STATUS = True
 except ImportError:
     HAS_AUTO_COMMIT = False
+    HAS_SESSION_STATUS = False
     print("[WARNING] Auto-commit dependencies not available. Install with: pip install -e .")
 
 
@@ -759,7 +762,11 @@ async def async_main(args: argparse.Namespace) -> int:
                     }
                 )
             
-            return 0 if session.status in ["COMPLETED", "completed", SessionStatus.COMPLETED] else 1
+            # Check if session completed successfully
+            if HAS_SESSION_STATUS:
+                return 0 if session.status in ["COMPLETED", "completed", SessionStatus.COMPLETED] else 1
+            else:
+                return 0 if session.status in ["COMPLETED", "completed"] else 1
             
     except Exception as e:
         print(f"[ERROR] Pipeline execution failed: {e}")
