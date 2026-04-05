@@ -12,7 +12,7 @@ from typing import Any, Dict, List
 
 from src.models.analysis import RankedProject
 from src.models.repository import Repository
-from src.recommendation_templates import (
+from src.ai.recommendation_templates import (
     TERMINAL_HEADER_TEMPLATE,
     TERMINAL_RANK_ROW_TEMPLATE,
     format_score_bar,

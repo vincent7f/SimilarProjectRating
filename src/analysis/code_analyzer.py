@@ -255,8 +255,7 @@ class CodeAnalyzer:
         for ext in source_exts:
             source_file_count += len(
                 list(p.glob(f"**/*{ext}"))
-            ) - len(list(p.glob(f"**/test*{ext}")))
-                 - len(list(p.glob(f"**/*_test{ext}")))
+            ) - len(list(p.glob(f"**/test*{ext}"))) - len(list(p.glob(f"**/*_test{ext}")))
 
         # Detect framework / 检测框架
         framework_indicators = {

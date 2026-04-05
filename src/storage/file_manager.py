@@ -186,7 +186,7 @@ class FileManager:
             import zipfile
 
             extract_target = workspace / "extracted"
-            extract_target.mkdir(exist_ok=True=True)
+            extract_target.mkdir(exist_ok=True)
 
             with zipfile.ZipFile(archive_path, "r") as zf:
                 zf.extractall(extract_target)

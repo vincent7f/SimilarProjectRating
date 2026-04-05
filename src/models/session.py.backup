@@ -93,7 +93,7 @@ class LogEntry:
         Returns:
             Dictionary representation of this log entry.
              此日志条目的字典表示.
-        """
+        }
         return {
             "timestamp": self.timestamp,
             "level": self.level,
@@ -110,7 +110,19 @@ class LogEntry:
 
 @dataclass
 class ExperienceEntry:
-    """Accumulated experience item from past runs."""
+    """Accumulated experience item from past runs.
+
+    Captures lessons learned (both successes and failures) from previous
+    analysis sessions to inform future execution improvements.
+
+    Attributes:
+        category: Type of experience ('success', 'failure', 'optimization', 'warning').
+        summary: Brief description of the lesson learned.
+        context: The situation or condition under which this was learned.
+        suggestion: Actionable recommendation derived from this experience.
+        session_id: ID of the session where this originated.
+        recorded_at: When this experience was recorded.
+    """
     category: str = ""
     summary: str = ""
     context: str = ""

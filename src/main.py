@@ -556,7 +556,6 @@ async def async_main(args: argparse.Namespace) -> int:
         )
     
     print(f"[INFO] Query: {args.query}")
-    pri)
     
     # Environment check before proceeding
     # 继续前进行环境检查

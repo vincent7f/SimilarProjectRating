@@ -181,14 +181,14 @@ def format_highlights_list(highlights: List[str], indent: int = 4) -> str:
 
     Args:
         highlights: List of highlight strings.
-                   高亮字符串列表.
+                    高亮字符串列表.
         indent: Spaces of indentation per item.
                  每项缩进空格数.
 
     Returns:
         Multi-line bulleted string.
          多行项目符号字符串.
-    }
+    """
     prefix = " " * indent
     if not highlights:
         return f"{prefix}- No notable strengths identified."
@@ -209,7 +209,7 @@ def format_concerns_list(concerns: List[str], indent: int = 4) -> str:
     Returns:
         Multi-line bulleted string.
          多行项目符号字符串.
-    }
+    """
     prefix = " " * indent
     if not concerns:
         return f"{prefix}- No significant concerns."
