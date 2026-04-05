@@ -6,10 +6,10 @@ This module provides mandatory Markdown export functionality for the
 Similar Project Rating System. All analysis results must be saved as 
 Markdown (.md) files according to user requirements.
 
-Markdown导出器 - 确保所有项目输出都是Markdown文件。
+Markdown导出器 - 确保所有项目输出都是Markdown文件.
 
-此模块为相似项目评分系统提供强制性的Markdown导出功能。
-根据用户要求，所有分析结果必须保存为Markdown(.md)文件。
+此模块为相似项目评分系统提供强制性的Markdown导出功能.
+根据用户要求,所有分析结果必须保存为Markdown(.md)文件.
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ class MarkdownExporter:
     """Mandatory Markdown export manager for all project outputs.
     
     This class ensures compliance with the requirement that 
-    "项目输出的结果，必须是markdown文件" (project outputs must be Markdown files).
+    "项目输出的结果,必须是markdown文件" (project outputs must be Markdown files).
     """
     
     def __init__(
@@ -141,11 +141,11 @@ class MarkdownExporter:
         enhanced_content = [
             "# Similar Project Rating Report - Detailed Analysis",
             "",
-            f"**Query（查询）:** {query}",
-            f"**Generated（生成时间）:** {timestamp}",
-            f"**Session ID（会话ID）:** {session_id or 'N/A'}",
-            f"**Analysis Duration（分析耗时）:** {duration_seconds:.1f} seconds",
-            f"**Total Projects Analyzed（总分析项目数）:** {len(ranked)}",
+            f"**Query(查询):** {query}",
+            f"**Generated(生成时间):** {timestamp}",
+            f"**Session ID(会话ID):** {session_id or 'N/A'}",
+            f"**Analysis Duration(分析耗时):** {duration_seconds:.1f} seconds",
+            f"**Total Projects Analyzed(总分析项目数):** {len(ranked)}",
             ""
         ]
         
@@ -159,7 +159,7 @@ class MarkdownExporter:
         if explanation:
             if self.bilingual_output:
                 enhanced_content.extend([
-                    f"**Overview（概览）:** {explanation.get('overview_en', '')}",
+                    f"**Overview(概览):** {explanation.get('overview_en', '')}",
                     f"**概览:** {explanation.get('overview_zh', '')}",
                     ""
                 ])
@@ -183,22 +183,22 @@ class MarkdownExporter:
             for rp in ranked[:5]:  # Top 5 projects
                 enhanced_content.extend([
                     f"### **{rp.rank}. {rp.project.full_name}**",
-                    f"**Score（得分）:** {rp.score.comprehensive:.1f}/100",
-                    f"**Tier（等级）:** {rp.tier.value}",
-                    f"**Stars（⭐⭐）:** {rp.project.stars:,}",
-                    f"**Language（语言）:** {rp.project.primary_language or 'N/A'}",
+                    f"**Score(得分):** {rp.score.comprehensive:.1f}/100",
+                    f"**Tier(等级):** {rp.tier.value}",
+                    f"**Stars(⭐⭐):** {rp.project.stars:,}",
+                    f"**Language(语言):** {rp.project.primary_language or 'N/A'}",
                     f"**URL:** [{rp.project.html_url or rp.project.url}]({rp.project.html_url or rp.project.url})",
                     ""
                 ])
                 
                 if rp.highlights:
-                    enhanced_content.append("**Strengths（优势）:**")
+                    enhanced_content.append("**Strengths(优势):**")
                     for highlight in rp.highlights[:3]:  # Top 3 strengths
                         enhanced_content.append(f"- {highlight}")
                     enhanced_content.append("")
                 
                 if rp.concerns:
-                    enhanced_content.append("**Concerns（关注点）:**")
+                    enhanced_content.append("**Concerns(关注点):**")
                     for concern in rp.concerns[:3]:  # Top 3 concerns
                         enhanced_content.append(f"- {concern}")
                     enhanced_content.append("")
@@ -210,14 +210,14 @@ class MarkdownExporter:
             "",
             "### Scoring Dimensions / 评分维度",
             """
-1. **Code Quality（代码质量 - 25%）**: Code structure, test coverage, documentation, complexity
-2. **Community Activity（社区活跃度 - 20%）**: Recent commits, open issues, contributor count
-3. **Functional Completeness（功能完整性 - 18%）**: Feature set, API design, project scope
-4. **Project Maturity（项目成熟度 - 15%）**: Version history, release frequency, governance
-5. **User Evaluation（用户评价 - 12%）**: Star growth, project popularity, user feedback
-6. **Maintainability（可持续性 - 10%）**: Issue resolution time, CI/CD setup, project health
+1. **Code Quality(代码质量 - 25%)**: Code structure, test coverage, documentation, complexity
+2. **Community Activity(社区活跃度 - 20%)**: Recent commits, open issues, contributor count
+3. **Functional Completeness(功能完整性 - 18%)**: Feature set, API design, project scope
+4. **Project Maturity(项目成熟度 - 15%)**: Version history, release frequency, governance
+5. **User Evaluation(用户评价 - 12%)**: Star growth, project popularity, user feedback
+6. **Maintainability(可持续性 - 10%)**: Issue resolution time, CI/CD setup, project health
 
-**Total Weight（总权重）:** 100%
+**Total Weight(总权重):** 100%
             """,
             ""
         ])
@@ -226,11 +226,11 @@ class MarkdownExporter:
         enhanced_content.extend([
             "### Tier System / 等级系统",
             """
-- **S Tier（卓越级）**: ≥90 points - Production-ready with excellent documentation
-- **A Tier（优秀级）**: 80-89 points - Very solid, suitable for most use cases
-- **B Tier（良好级）**: 65-79 points - Good quality, may need some customization
-- **C Tier（普通级）**: 50-64 points - Acceptable for specific use cases
-- **D Tier（基础级）**: <50 points - Early stage or limited functionality
+- **S Tier(卓越级)**: ≥90 points - Production-ready with excellent documentation
+- **A Tier(优秀级)**: 80-89 points - Very solid, suitable for most use cases
+- **B Tier(良好级)**: 65-79 points - Good quality, may need some customization
+- **C Tier(普通级)**: 50-64 points - Acceptable for specific use cases
+- **D Tier(基础级)**: <50 points - Early stage or limited functionality
             """,
             ""
         ])
@@ -244,7 +244,7 @@ class MarkdownExporter:
         if explanation:
             if self.bilingual_output:
                 enhanced_content.extend([
-                    f"**Conclusion（结论）:** {explanation.get('conclusion_en', '')}",
+                    f"**Conclusion(结论):** {explanation.get('conclusion_en', '')}",
                     f"**结论:** {explanation.get('conclusion_zh', explanation.get('conclusion_en', ''))}",
                     ""
                 ])
@@ -257,8 +257,8 @@ class MarkdownExporter:
         if ranked:
             top_project = ranked[0]
             enhanced_content.extend([
-                f"**Top Recommendation（首选推荐）:** {top_project.project.full_name}",
-                f"**Reason（推荐理由）:** {top_project.highlights[0] if top_project.highlights else 'Comprehensive score leader'}",
+                f"**Top Recommendation(首选推荐):** {top_project.project.full_name}",
+                f"**Reason(推荐理由):** {top_project.highlights[0] if top_project.highlights else 'Comprehensive score leader'}",
                 ""
             ])
         
@@ -266,7 +266,7 @@ class MarkdownExporter:
         enhanced_content.extend([
             "---",
             "*Generated by Similar Project Rating System / 由相似项目评分系统生成*",
-            "*All results are saved as Markdown files as per requirement / 根据要求，所有结果均保存为Markdown文件*",
+            "*All results are saved as Markdown files as per requirement / 根据要求,所有结果均保存为Markdown文件*",
             f"*Report saved at: {filepath}*",
         ])
         

@@ -5,9 +5,9 @@ Implements the BaseProvider interface for Ollama, a local LLM runtime that
 runs models on the user's machine. This is the primary (preferred) backend
 for privacy-preserving and cost-free AI operations.
 
-Ollama提供商 - 本地LLM后端适配器。
-为Ollama实现BaseProvider接口，Ollama是在用户机器上运行模型的本地LLM运行时。
-这是用于保护隐私和免费AI操作的主要（首选）后端。
+Ollama提供商 - 本地LLM后端适配器.
+为Ollama实现BaseProvider接口,Ollama是在用户机器上运行模型的本地LLM运行时.
+这是用于保护隐私和免费AI操作的主要(首选)后端.
 """
 
 from __future__ import annotations
@@ -26,13 +26,13 @@ class OllamaProvider(BaseProvider):
     Connects to a locally running Ollama instance (default: localhost:11434)
     to generate text completions using models like llama3, mistral, codellama.
 
-    Ollama本地LLM提供商实现。
-连接到本地运行的Ollama实例（默认：localhost:11434），
-使用llama3、mistral、codellama等模型生成文本补全。
+    Ollama本地LLM提供商实现.
+连接到本地运行的Ollama实例(默认:localhost:11434),
+使用llama3,mistral,codellama等模型生成文本补全.
 
     Attributes:
         Inherits all attributes from BaseProvider.
-         继承BaseProvider的所有属性。
+         继承BaseProvider的所有属性.
     """
 
     def __init__(
@@ -47,19 +47,19 @@ class OllamaProvider(BaseProvider):
     ) -> None:
         """Initialize Ollama provider with connection settings.
 
-        使用连接设置初始化Ollama提供商。
+        使用连接设置初始化Ollama提供商.
 
         Args:
             model: Ollama model name (e.g., 'llama3.2:latest', 'mistral:7b').
-                  Ollama模型名称（例如'llama3.2:latest'、'mistral:7b'）。
+                  Ollama模型名称(例如'llama3.2:latest','mistral:7b').
             api_base: Ollama server base URL.
-                      Ollama服务器基础URL。
+                      Ollama服务器基础URL.
             api_key: Not used by Ollama but kept for interface consistency.
-                    Ollama不使用但为接口一致性保留。
+                    Ollama不使用但为接口一致性保留.
             timeout: HTTP request timeout seconds.
-                    HTTP请求超时秒数。
+                    HTTP请求超时秒数.
             **kwargs: Additional BaseProvider parameters.
-                     其他BaseProvider参数。
+                     其他BaseProvider参数.
         """
         super().__init__(
             name="Ollama",
@@ -82,19 +82,19 @@ class OllamaProvider(BaseProvider):
     ) -> LLMResponse:
         """Generate text using the Ollama /api/generate endpoint.
 
-        使用Ollama /api/generate端点生成文本。
+        使用Ollama /api/generate端点生成文本.
 
         Args:
             prompt: User prompt text.
-                  用户提示文本。
+                  用户提示文本.
             system_prompt: Optional system instruction.
-                          可选系统指令。
+                          可选系统指令.
             **kwargs: Override parameters (temperature, etc.).
-                     覆盖参数（temperature等）。
+                     覆盖参数(temperature等).
 
         Returns:
             Normalized LLMResponse.
-             标准化的LLMResponse。
+             标准化的LLMResponse.
         """
         url = f"{self.api_base}/api/generate"
 
@@ -134,11 +134,11 @@ class OllamaProvider(BaseProvider):
     async def check_health(self) -> ProviderStatus:
         """Check if Ollama server is reachable and responsive.
 
-        检查Ollama服务器是否可达且响应。
+        检查Ollama服务器是否可达且响应.
 
         Returns:
             Updated ProviderStatus with health assessment.
-             包含健康评估的更新后ProviderStatus。
+             包含健康评估的更新后ProviderStatus.
         """
         try:
             async with httpx.AsyncClient(timeout=10) as client:

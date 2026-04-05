@@ -5,9 +5,9 @@ Uses LLM to generate multiple optimized GitHub search keyword groups
 from a user's natural language query, targeting different aspects
 (functionality, tech stack, use case, implementation).
 
-AI驱动的关键词生成器。
-使用LLM从用户自然语言查询生成多组优化的GitHub搜索关键词，
-针对不同方面（功能、技术栈、用例、实现方式）。
+AI驱动的关键词生成器.
+使用LLM从用户自然语言查询生成多组优化的GitHub搜索关键词,
+针对不同方面(功能,技术栈,用例,实现方式).
 """
 
 from __future__ import annotations
@@ -30,15 +30,15 @@ class KeywordGenerator:
     consults the LLM to produce 3-5 keyword groups that cover different search
     angles, and returns them ready for GitHub API consumption.
 
-    使用AI生成GitHub优化搜索的关键词生成器。
-接收用户对所需内容的自然语言描述，咨询LLM生成3-5个覆盖不同搜索角度的
-关键词组，并返回它们以供GitHub API使用。
+    使用AI生成GitHub优化搜索的关键词生成器.
+接收用户对所需内容的自然语言描述,咨询LLM生成3-5个覆盖不同搜索角度的
+关键词组,并返回它们以供GitHub API使用.
 
     Attributes:
         llm_client: LLM client for generation.
-                   用于生成的LLM客户端。
+                   用于生成的LLM客户端.
         num_groups: Number of keyword groups to generate per request.
-                   每次请求生成的关键词组数量。
+                   每次请求生成的关键词组数量.
     """
 
     def __init__(
@@ -57,19 +57,19 @@ class KeywordGenerator:
     ) -> List[KeywordGroup]:
         """Generate search keyword groups from a user query.
 
-        从用户查询生成搜索关键词组。
+        从用户查询生成搜索关键词组.
 
         Args:
             query: Natural language description of desired functionality.
-                  对所需功能的自然语言描述。
+                  对所需功能的自然语言描述.
             language_hint: Optional preferred programming language hint.
-                         可选的首选编程语言提示。
+                         可选的首选编程语言提示.
             num_groups: Override default number of groups to generate.
-                       覆盖默认的要生成的组数量。
+                       覆盖默认的要生成的组数量.
 
         Returns:
             List of KeywordGroup objects with primary, extensions, category.
-             包含primary、extensions、category的KeywordGroup对象列表。
+             包含primary,extensions,category的KeywordGroup对象列表.
         """
         if not self.llm_client:
             raise RuntimeError("LLMClient required for KeywordGeneration.")
@@ -138,7 +138,7 @@ class KeywordGenerator:
                     "raw_preview": raw_response[:200] if 'raw_response' in dir() else "",
                 },
             )
-            # Fallback: create single group from query / 后备：从查询创建单个组
+            # Fallback: create single group from query / 后备:从查询创建单个组
             return [
                 KeywordGroup(
                     primary=query,
@@ -162,17 +162,17 @@ class KeywordGenerator:
     ) -> List[str]:
         """Generate formatted GitHub search query strings.
 
-        生成格式化的GitHub搜索查询字符串。
+        生成格式化的GitHub搜索查询字符串.
 
         Args:
             query: User input.
-                  用户输入。
+                  用户输入.
             **kwargs: Passed through to generate().
-                     传递给generate()。
+                     传递给generate().
 
         Returns:
             List of query strings ready for GitHub API /search/repositories.
-             准备好用于GitHub API /search/repositories的查询字符串列表。
+             准备好用于GitHub API /search/repositories的查询字符串列表.
         """
         groups = await self.generate(query, **kwargs)
         return [g.build_search_query() for g in groups]

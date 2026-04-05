@@ -6,10 +6,10 @@ Each template defines the system instructions, user input format, and
 expected output schema for specific tasks like keyword generation,
 relevance judgment, recommendation, and explanation generation.
 
-提示模板集中定义。
-AI层使用的所有提示模板的集中集合。
-每个模板为特定任务定义系统指令、用户输入格式和预期输出架构，
-如关键词生成、相关性判断、推荐和解释生成。
+提示模板集中定义.
+AI层使用的所有提示模板的集中集合.
+每个模板为特定任务定义系统指令,用户输入格式和预期输出架构,
+如关键词生成,相关性判断,推荐和解释生成.
 """
 
 from typing import Dict, List, Optional
@@ -27,8 +27,8 @@ You always respond in valid JSON format when structured output is requested.
 You are precise, factual, and base your analysis on observable data.
 When uncertain, you express confidence levels explicitly.
 
-你是GitHub项目分析师和软件工程师助手专家。你的角色是帮助用户根据需求查找、比较和评估GitHub上的开源项目。
-当需要结构化输出时，你始终以有效的JSON格式回应。你精确、基于事实，基于可观察数据进行分析。不确定时，明确表达置信度。
+你是GitHub项目分析师和软件工程师助手专家.你的角色是帮助用户根据需求查找,比较和评估GitHub上的开源项目.
+当需要结构化输出时,你始终以有效的JSON格式回应.你精确,基于事实,基于可观察数据进行分析.不确定时,明确表达置信度.
 """
 
 
@@ -260,19 +260,19 @@ def build_keyword_prompt(
 ) -> str:
     """Build the full keyword generation prompt.
 
-    构建完整的关键词生成提示。
+    构建完整的关键词生成提示.
 
     Args:
         user_query: User's natural language search query.
-                   用户自然语言搜索查询。
+                   用户自然语言搜索查询.
         num_groups: Number of keyword groups to generate.
-                   要生成关键词组的数量。
+                   要生成关键词组的数量.
         system_instruction: System-level instruction override.
-                           系统级指令覆盖。
+                           系统级指令覆盖.
 
     Returns:
         Fully formatted prompt string ready for LLM.
-         准备好发送给LLM的完整格式化提示字符串。
+         准备好发送给LLM的完整格式化提示字符串.
     """
     return KEYWORD_GENERATION_PROMPT.format(
         system_instruction=system_instruction,
@@ -293,7 +293,7 @@ def build_relevance_prompt(
 ) -> str:
     """Build the relevance judgment prompt.
 
-    构建相关性判断提示。
+    构建相关性判断提示.
     """
     return RELEVANCE_JUDGMENT_PROMPT.format(
         system_instruction=system_instruction,
@@ -315,7 +315,7 @@ def build_recommendation_prompt(
 ) -> str:
     """Build the recommendation generation prompt.
 
-    构建推荐生成提示。
+    构建推荐生成提示.
     """
     return RECOMMENDATION_PROMPT.format(
         system_instruction=system_instruction,

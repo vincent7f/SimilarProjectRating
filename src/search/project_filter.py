@@ -5,9 +5,9 @@ Filters candidate GitHub projects by relevance to the user's query using
 AI-powered judgment, then applies star-count ranking and max-project caps.
 Ensures only genuinely relevant projects proceed to the analysis phase.
 
-项目相关性过滤器。
-通过AI驱动的判断按与用户查询的相关性过滤候选GitHub项目，
-然后应用star数排名和最大项目上限。确保只有真正相关的项目进入分析阶段。
+项目相关性过滤器.
+通过AI驱动的判断按与用户查询的相关性过滤候选GitHub项目,
+然后应用star数排名和最大项目上限.确保只有真正相关的项目进入分析阶段.
 """
 
 from __future__ import annotations
@@ -32,10 +32,10 @@ class ProjectFilter:
     uses LLM to assess each one's relevance to the original query, filters
     out irrelevant entries, and enforces maximum project count limits.
 
-    具有排名和封顶功能的AI增强项目相关性过滤器。
-处理来自GitHub搜索结果的候选仓库列表，
-使用LLM评估每个仓库与原始查询的相关性，
-过滤掉不相关条目，并强制执行最大项目数量限制。
+    具有排名和封顶功能的AI增强项目相关性过滤器.
+处理来自GitHub搜索结果的候选仓库列表,
+使用LLM评估每个仓库与原始查询的相关性,
+过滤掉不相关条目,并强制执行最大项目数量限制.
     """
 
     DEFAULT_THRESHOLD: float = 0.6
@@ -61,21 +61,21 @@ class ProjectFilter:
     ) -> FilterResult:
         """Filter candidates by AI relevance assessment.
 
-        通过AI相关性评估过滤候选项目。
+        通过AI相关性评估过滤候选项目.
 
         Args:
             candidates: All candidate repositories from search.
-                        来自搜索的所有候选仓库。
+                        来自搜索的所有候选仓库.
             query: Original user search query.
-                  原始用户搜索查询。
+                  原始用户搜索查询.
             threshold: Minimum relevance score to keep (0.0-1.0).
-                      要保留的最低相关性分数（0.0-1.0）。
+                      要保留的最低相关性分数(0.0-1.0).
             max_projects: Maximum projects to retain after filtering.
-                          过滤后保留的最大项目数。
+                          过滤后保留的最大项目数.
 
         Returns:
             FilterResult with kept/removed lists, scores, and statistics.
-             包含保留/移除列表、分数和统计信息的FilterResult。
+             包含保留/移除列表,分数和统计信息的FilterResult.
         """
         effective_threshold = threshold or self.threshold
         effective_max = max_projects or self.max_projects
@@ -108,7 +108,7 @@ class ProjectFilter:
                 threshold=effective_threshold,
             )
 
-        # Phase 1: AI Relevance Scoring / 阶段1：AI相关性评分
+        # Phase 1: AI Relevance Scoring / 阶段1:AI相关性评分
         scores: Dict[str, float] = {}
         reasons: Dict[str, str] = {}
 
@@ -117,11 +117,11 @@ class ProjectFilter:
                 unique_candidates, query
             )
         else:
-            # No AI: pass all through with neutral score / 无AI：全部通过中性分数
+            # No AI: pass all through with neutral score / 无AI:全部通过中性分数
             for repo in unique_candidates:
                 scores[repo.full_name] = 1.0
 
-        # Phase 2: Apply Threshold / 阶段2：应用阈值
+        # Phase 2: Apply Threshold / 阶段2:应用阈值
         kept: List[Repository] = []
         removed: List[Repository] = []
 
@@ -138,7 +138,7 @@ class ProjectFilter:
                     )
                 }
 
-        # Phase 3: Enforce Max Projects Cap (by stars) / 阶段3：执行最大项目上限（按stars）
+        # Phase 3: Enforce Max Projects Cap (by stars) / 阶段3:执行最大项目上限(按stars)
         truncated_count = 0
         if len(kept) > effective_max:
             kept.sort(key=lambda r: r.stars, reverse=True)
@@ -186,7 +186,7 @@ class ProjectFilter:
     ) -> tuple[Dict[str, float], Dict[str, str]]:
         """Score all candidates' relevance using LLM (with concurrency control).
 
-        使用LLM对所有候选项目的相关性进行评分（带并发控制）。"""
+        使用LLM对所有候选项目的相关性进行评分(带并发控制)."""
 
         scores: Dict[str, float] = {}
         reasons: Dict[str, str] = {}

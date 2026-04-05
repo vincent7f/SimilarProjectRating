@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 class ScoreCalculator:
     """6-dimension weighted scoring engine with min-max normalization.
 
-    6维加权评分引擎，带min-max标准化。
+    6维加权评分引擎,带min-max标准化.
     """
 
     DIMENSION_KEYS = [
@@ -79,15 +79,15 @@ class ScoreCalculator:
         if not results:
             return []
 
-        # Step 1: Raw per-dimension scores / 步骤1：每维度原始分数
+        # Step 1: Raw per-dimension scores / 步骤1:每维度原始分数
         raw_scores: List[ProjectScore] = [
             self.calculate_project_score(r) for r in results
         ]
 
-        # Step 2: Min-max normalization per dimension / 步骤2：每维度min-max标准化
+        # Step 2: Min-max normalization per dimension / 步骤2:每维度min-max标准化
         normalized = self._normalize_dimensions(raw_scores)
 
-        # Step 3: Weighted comprehensive score / 步骤3：加权综合分数
+        # Step 3: Weighted comprehensive score / 步骤3:加权综合分数
         for i, ps in enumerate(raw_scores):
             ps.normalized = normalized[i]
             ps.comprehensive = round(sum(
@@ -96,7 +96,7 @@ class ScoreCalculator:
                 if dim in self.weights and dim in ps.normalized
             ) * 100, 1)
 
-        # Step 4: Rank by comprehensive score / 步骤4：按综合分数排名
+        # Step 4: Rank by comprehensive score / 步骤4:按综合分数排名
         sorted_scores = sorted(raw_scores, key=lambda x: x.comprehensive, reverse=True)
         for rank_idx, ps in enumerate(sorted_scores, start=1):
             ps.rank = rank_idx

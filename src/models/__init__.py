@@ -4,9 +4,9 @@ Models Package - Domain data model definitions.
 Contains all dataclasses and type definitions representing the core domain
 entities: repositories, metrics, analysis results, sessions, and search data.
 
-模型包 - 领域数据模型定义。
-包含表示所有核心领域实体的dataclass和类型定义：
-仓库、指标、分析结果、会话和搜索数据。
+模型包 - 领域数据模型定义.
+包含表示所有核心领域实体的dataclass和类型定义:
+仓库,指标,分析结果,会话和搜索数据.
 """
 
 from src.models.repository import Repository, Release, Asset, LicenseInfo

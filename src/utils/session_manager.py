@@ -5,8 +5,8 @@ Session Management Module - Session tracking, summarization, and auto-commit sup
 Manages analysis sessions, logs execution steps, generates summaries,
 and tracks success/failure experiences for future improvements.
 
-会话管理模块 - 会话跟踪、总结和自动提交支持。
-管理分析会话，记录执行步骤，生成总结，并跟踪成功/失败经验以供未来改进。
+会话管理模块 - 会话跟踪,总结和自动提交支持.
+管理分析会话,记录执行步骤,生成总结,并跟踪成功/失败经验以供未来改进.
 """
 
 import asyncio

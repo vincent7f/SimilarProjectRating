@@ -5,9 +5,9 @@ Implements automatic git commit after successful steps according to the design s
 - Each step should be automatically committed to GitHub
 - Support git worktree for parallel development
 
-Git助手 - Git操作封装，用于自动提交功能。
+Git助手 - Git操作封装,用于自动提交功能.
 
-根据设计规范实现成功步骤后的自动git提交：
+根据设计规范实现成功步骤后的自动git提交:
 - 每一步都应自动提交到GitHub
 - 支持git worktree进行并行开发
 """

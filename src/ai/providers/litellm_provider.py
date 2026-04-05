@@ -5,9 +5,9 @@ Implements the BaseProvider interface through LiteLLM library which provides
 a unified interface to 100+ LLM providers (OpenAI, Anthropic, Cohere, HuggingFace,
 local models, etc.) with automatic routing, retry, fallback, and load balancing.
 
-LiteLLM提供商 - 统一LLM路由适配器。
-通过LiteLLM库实现BaseProvider接口，LiteLLM提供对100+个LLM提供商的统一接口
-（OpenAI、Anthropic、Cohere、HuggingFace、本地模型等），具有自动路由、重试、故障转移和负载均衡。
+LiteLLM提供商 - 统一LLM路由适配器.
+通过LiteLLM库实现BaseProvider接口,LiteLLM提供对100+个LLM提供商的统一接口
+(OpenAI,Anthropic,Cohere,HuggingFace,本地模型等),具有自动路由,重试,故障转移和负载均衡.
 """
 
 from __future__ import annotations
@@ -30,9 +30,9 @@ class LiteLLMProvider(BaseProvider):
     switching between providers without changing application code. Requires
     the 'litellm' package to be installed.
 
-    LiteLLM统一路由提供商实现。
-使用litellm库作为通用翻译层，允许在不更改应用程序代码的情况下
-在提供商之间无缝切换。需要安装'litellm'包。
+    LiteLLM统一路由提供商实现.
+使用litellm库作为通用翻译层,允许在不更改应用程序代码的情况下
+在提供商之间无缝切换.需要安装'litellm'包.
     """
 
     def __init__(
@@ -47,19 +47,19 @@ class LiteLLMProvider(BaseProvider):
     ) -> None:
         """Initialize LiteLLM provider with routing configuration.
 
-        使用路由配置初始化LiteLLM提供商。
+        使用路由配置初始化LiteLLM提供商.
 
         Args:
             model: LiteLLM model string format (e.g., 'openai/gpt-4',
                   'anthropic/claude-3', 'ollama/llama3').
-                  LiteLLM模型字符串格式（例如'openai/gpt-4'、
-                  'anthropic/claude-3'、'ollama/llama3'）。
+                  LiteLLM模型字符串格式(例如'openai/gpt-4',
+                  'anthropic/claude-3','ollama/llama3').
             api_base: Custom base URL (optional, often not needed with LiteLLM).
-                     自定义基础URL（可选，通常LiteLLM不需要）。
+                     自定义基础URL(可选,通常LiteLLM不需要).
             api_key: API key (can also use env vars like OPENAI_API_KEY).
-                    API密钥（也可以使用OPENAI_API_KEY等环境变量）。
+                    API密钥(也可以使用OPENAI_API_KEY等环境变量).
             **kwargs: Additional BaseProvider parameters.
-                     其他BaseProvider参数。
+                     其他BaseProvider参数.
         """
         super().__init__(
             name="LiteLLM",
@@ -82,19 +82,19 @@ class LiteLLMProvider(BaseProvider):
     ) -> LLMResponse:
         """Generate text via LiteLLM completion function.
 
-        通过LiteLLM补全函数生成文本。
+        通过LiteLLM补全函数生成文本.
 
         Args:
             prompt: User prompt.
-                  用户提示。
+                  用户提示.
             system_prompt: System instruction (passed as first message).
-                         系统指令（作为第一条消息传递）。
+                         系统指令(作为第一条消息传递).
             **kwargs: Override parameters.
-                     覆盖参数。
+                     覆盖参数.
 
         Returns:
             Normalized LLMResponse.
-             标准化的LLMResponse。
+             标准化的LLMResponse.
         """
         try:
             import litellm
@@ -102,7 +102,7 @@ class LiteLLMProvider(BaseProvider):
             raise ImportError(
                 "litellm package is required for LiteLLMProvider. "
                 "Install with: pip install litellm. "
-                "LiteLLMProvider需要litellm包。使用pip install litellm安装。"
+                "LiteLLMProvider需要litellm包.使用pip install litellm安装."
             )
 
         messages = []
@@ -148,11 +148,11 @@ class LiteLLMProvider(BaseProvider):
     async def check_health(self) -> ProviderStatus:
         """Verify LiteLLM installation and basic connectivity.
 
-        验证LiteLLM安装和基本连接性。
+        验证LiteLLM安装和基本连接性.
 
         Returns:
             Updated ProviderStatus.
-             更新后的ProviderStatus。
+             更新后的ProviderStatus.
         """
         try:
             import litellm

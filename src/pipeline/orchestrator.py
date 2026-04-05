@@ -127,11 +127,11 @@ class PipelineOrchestrator:
         )
 
         try:
-            # Step 1: Keywords / 步骤1：关键词
+            # Step 1: Keywords / 步骤1:关键词
             self._log_step(logs, "keyword_generation", "start")
             keyword_groups: List[KeywordGroup] = await self.keyword_gen.generate(query)
 
-            # Step 2: Search / 步骤2：搜索
+            # Step 2: Search / 步骤2:搜索
             self._log_step(logs, "github_search", "start")
             all_candidates: List[Repository] = []
             for kg in keyword_groups:
@@ -156,7 +156,7 @@ class PipelineOrchestrator:
             session.candidate_projects = unique_candidates
             session.keyword_groups = [kg.__dict__ for kg in keyword_groups]
 
-            # Step 3: Filter / 步骤3：过滤
+            # Step 3: Filter / 步骤3:过滤
             self._log_step(logs, "filter", "start")
             filter_result: FilterResult = await self.project_filter.filter(
                 candidates=unique_candidates,
@@ -172,7 +172,7 @@ class PipelineOrchestrator:
             if not filter_result.kept:
                 raise ValueError("No relevant projects found after filtering.")
 
-            # Step 4: Analyze / 步骤4：分析
+            # Step 4: Analyze / 步骤4:分析
             self._log_step(logs, "analysis", "start")
             analysis_results: List[AnalysisResult] = await \
                 self.analysis_pipeline.analyze_batch(filter_result.kept)
@@ -181,11 +181,11 @@ class PipelineOrchestrator:
             self._log_step(logs, "analysis", "complete",
                         results={"analyzed": len(analysis_results)})
 
-            # Step 5: Score / 步骤5：评分
+            # Step 5: Score / 步骤5:评分
             self._log_step(logs, "scoring", "start")
             scored: List[ProjectScore] = self.scorer.calculate_batch_scores(analysis_results)
 
-            # Step 6: Rank / 步骤6：排名
+            # Step 6: Rank / 步骤6:排名
             ranked: List[RankedProject] = self.ranker.rank_by_comprehensive(
                 scored,
                 [r.project for r in analysis_results],
@@ -193,16 +193,16 @@ class PipelineOrchestrator:
 
             session.ranked_results = ranked
 
-            # Step 7: Recommend & Explain / 步骤7：推荐与解释
+            # Step 7: Recommend & Explain / 步骤7:推荐与解释
             self._log_step(logs, "recommendation", "start")
             recommendations: List[RankedProject] = await self.recommender.recommend(
                 scored, [r.project for r in analysis_results], query,
             )
 
-            # Step 8: Report / 步骤8：报告
+            # Step 8: Report / 步骤8:报告
             explanation = await self.explainer.explain_comparison(recommendations[:10], query)
             
-            # MANDATORY: Export to Markdown file / 强制：导出为Markdown文件
+            # MANDATORY: Export to Markdown file / 强制:导出为Markdown文件
             self._log_step(logs, "markdown_export", "start")
             total_duration = (datetime.now(timezone.utc) - start_time).total_seconds()
             

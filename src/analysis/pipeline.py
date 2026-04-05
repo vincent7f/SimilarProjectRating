@@ -5,9 +5,9 @@ Coordinates the three analysis modules (code, community, maturity) to run
 concurrently or sequentially, aggregates results into AnalysisResult objects,
 and manages the full analysis lifecycle for each project.
 
-分析流水线 - 所有分析器的并行编排。
-协调三个分析模块（代码、社区、成熟度）并发或顺序运行，
-将结果聚合到AnalysisResult对象中，并管理每个项目的完整分析生命周期。
+分析流水线 - 所有分析器的并行编排.
+协调三个分析模块(代码,社区,成熟度)并发或顺序运行,
+将结果聚合到AnalysisResult对象中,并管理每个项目的完整分析生命周期.
 """
 
 from __future__ import annotations
@@ -38,22 +38,22 @@ class AnalysisPipeline:
     coordinating code quality, community health, and maturity assessments
     with configurable parallelism and error handling.
 
-    编排多维项目分析。
-管理一批项目的完整分析工作流，
-协调代码质量、社区健康度和成熟度评估，
-具有可配置的并行性和错误处理。
+    编排多维项目分析.
+管理一批项目的完整分析工作流,
+协调代码质量,社区健康度和成熟度评估,
+具有可配置的并行性和错误处理.
 
     Attributes:
         code_analyzer: Code quality assessment engine.
-                      代码质量评估引擎。
+                      代码质量评估引擎.
         community_analyzer: Community metrics engine.
-                           社区指标引擎。
+                           社区指标引擎.
         maturity_analyzer: Maturity assessment engine.
-                         成熟度评估引擎。
+                         成熟度评估引擎.
         parallel_analysis: Whether to run analyzers concurrently.
-                          是否并发运行分析器。
+                          是否并发运行分析器.
         max_concurrent: Max simultaneous analyses (if parallel).
-                       最大同时分析数（如果并行）。
+                       最大同时分析数(如果并行).
     """
 
     def __init__(
@@ -74,7 +74,7 @@ class AnalysisPipeline:
     async def analyze_project(self, repository: Repository) -> AnalysisResult:
         """Run all analysis dimensions on a single project.
 
-        对单个项目运行所有分析维度。"""
+        对单个项目运行所有分析维度."""
         start_time = time.time()
         errors: List[str] = []
         warnings: List[str] = []
@@ -157,7 +157,7 @@ class AnalysisPipeline:
     ) -> List[AnalysisResult]:
         """Analyze multiple projects with concurrency control.
 
-        使用并发控制分析多个项目。"""
+        使用并发控制分析多个项目."""
         results: List[AnalysisResult] = []
 
         if not repositories:

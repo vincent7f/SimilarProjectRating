@@ -5,9 +5,9 @@ Provides unified LLM client interface with Ollama (primary),
 OpenAI-compatible APIs (fallback), and LiteLLM (routing) support.
 Also includes recommendation and explanation generation capabilities.
 
-AI集成模块 - LLM驱动的智能层。
-提供统一的LLM客户端接口，支持Ollama（首选）、OpenAI兼容API（备选）
-和LiteLLM（路由）后端。同时包含推荐和解释生成能力。
+AI集成模块 - LLM驱动的智能层.
+提供统一的LLM客户端接口,支持Ollama(首选),OpenAI兼容API(备选)
+和LiteLLM(路由)后端.同时包含推荐和解释生成能力.
 """
 
 from src.ai.llm_client import LLMClient

@@ -5,9 +5,9 @@ Evaluates GitHub project community health through metrics including
 star growth trends, commit frequency, issue handling efficiency,
 contributor diversity, and recency of activity.
 
-社区活跃度分析器。
-通过包括Star增长趋势、提交频率、Issue处理效率、
-贡献者多样性和最近活动时间在内的指标评估GitHub项目社区健康度。
+社区活跃度分析器.
+通过包括Star增长趋势,提交频率,Issue处理效率,
+贡献者多样性和最近活动时间在内的指标评估GitHub项目社区健康度.
 """
 
 from __future__ import annotations
@@ -29,13 +29,13 @@ class CommunityAnalyzer:
     Aggregates data from GitHub API endpoints to compute community vitality
     scores across engagement, responsiveness, and sustainability dimensions.
 
-    社区健康度和活动性评估引擎。
-聚合来自GitHub API端点的数据以计算参与度、响应能力和可持续性维度上的
-    社区活力分数。
+    社区健康度和活动性评估引擎.
+聚合来自GitHub API端点的数据以计算参与度,响应能力和可持续性维度上的
+    社区活力分数.
 
     Attributes:
         github_client: Client for fetching community data from GitHub API.
-                      用于从GitHub API获取社区数据的客户端。
+                      用于从GitHub API获取社区数据的客户端.
     """
 
     def __init__(self, github_client: Any = None) -> None:
@@ -44,15 +44,15 @@ class CommunityAnalyzer:
     async def analyze(self, repository: Repository) -> CommunityMetrics:
         """Analyze community metrics for a repository.
 
-        分析仓库的社区指标。
+        分析仓库的社区指标.
 
         Args:
             repository: Repository with basic metadata populated.
-                       已填充基本元数据的仓库。
+                       已填充基本元数据的仓库.
 
         Returns:
             Complete CommunityMetrics assessment.
-             完整的CommunityMetrics评估。
+             完整的CommunityMetrics评估.
         """
         start_time = time.time()
         owner_repo = repository.full_name.split("/")
@@ -169,22 +169,22 @@ class CommunityAnalyzer:
     ) -> float:
         """Calculate normalized activity score (0-100).
 
-        计算标准化活跃度分数（0-100）。"""
+        计算标准化活跃度分数(0-100)."""
         score = 0.0
 
-        # Star velocity (max 35 points) / Star速度（最高35分）
+        # Star velocity (max 35 points) / Star速度(最高35分)
         spd_normalized = min(1.0, stars_per_day / 50.0)  # 50+ stars/day is excellent
         score += spd_normalized * 35.0
 
-        # Commit frequency (max 30 points) / 提交频率（最高30分）
+        # Commit frequency (max 30 points) / 提交频率(最高30分)
         cf_normalized = min(1.0, commits_per_week / 20.0)  # 20+/week is very active
         score += cf_normalized * 30.0
 
-        # Contributor base (max 20 points) / 贡献者基础（最高20分）
+        # Contributor base (max 20 points) / 贡献者基础(最高20分)
         c_norm = min(1.0, contributors / 50.0)  # 50+ is large community
         score += c_norm * 20.0
 
-        # Recency bonus/penalty (max 15 points) / 最近度奖励/惩罚（最高15分）
+        # Recency bonus/penalty (max 15 points) / 最近度奖励/惩罚(最高15分)
         if days_since_push <= 7:
             score += 15.0  # Very recent / 非常最近
         elif days_since_push <= 30:
@@ -207,13 +207,13 @@ class CommunityAnalyzer:
     ) -> float:
         """Calculate community health/responsiveness score (0-100).
 
-        计算社区健康/响应能力分数（0-100）。"""
+        计算社区健康/响应能力分数(0-100)."""
         score = 0.0
 
-        # Issue resolution rate (max 40 points) / Issue解决率（最高40分）
+        # Issue resolution rate (max 40 points) / Issue解决率(最高40分)
         score += issue_resolution_rate * 40.0
 
-        # Response time (max 25 points) / 响应时间（最高25分）
+        # Response time (max 25 points) / 响应时间(最高25分)
         if avg_resolution_days is not None:
             if avg_resolution_days < 7:
                 score += 25.0
@@ -226,11 +226,11 @@ class CommunityAnalyzer:
         else:
             score += 15.0  # Neutral / 中性
 
-        # Community size factor (max 20 points) / 社区规模因素（最高20分）
+        # Community size factor (max 20 points) / 社区规模因素(最高20分)
         c_factor = min(1.0, contributors / 20.0)
         score += c_factor * 20.0
 
-        # Open issue ratio penalty (max -15) / 开放Issue比例惩罚（最多-15）
+        # Open issue ratio penalty (max -15) / 开放Issue比例惩罚(最多-15)
         if contributors > 5 and open_issues > 100:
             issue_ratio = open_issues / contributors
             if issue_ratio > 10:
@@ -244,9 +244,9 @@ class CommunityAnalyzer:
     def _estimate_star_growth(total_stars: int, days_back: int) -> float:
         """Heuristic star growth estimation when API history unavailable.
 
-        当API历史不可用时的启发式Star增长估算。"""
+        当API历史不可用时的启发式Star增长估算."""
         # Assume exponential decay model: most growth early, slowing over time
-        # 假设指数衰减模型：早期大部分增长，随后放缓
+        # 假设指数衰减模型:早期大部分增长,随后放缓
         age_penalty = max(0.1, 1.0 - (days_back / 1000))  # Decay over ~3 years
         base_daily = total_stars / 500  # Rough baseline / 粗略基准线
         return base_daily * age_penalty * days_back
@@ -255,7 +255,7 @@ class CommunityAnalyzer:
     def _estimate_commit_frequency(repo: Repository) -> float:
         """Estimate weekly commit frequency from available data.
 
-        从可用数据估算每周提交频率。"""
+        从可用数据估算每周提交频率."""
         if repo.days_since_last_push < 0 or repo.age_days == 0:
             return 5.0  # Default assumption / 默认假设
 
@@ -272,7 +272,7 @@ class CommunityAnalyzer:
     def _estimate_from_repository(self, repo: Repository) -> Dict[str, Any]:
         """Generate rough estimates from base repository data only.
 
-        仅从基本仓库数据生成粗略估算。"""
+        仅从基本仓库数据生成粗略估算."""
         return {
             "contributor_count": max(1, repo.stars // 200),
             "top_contributors": [],

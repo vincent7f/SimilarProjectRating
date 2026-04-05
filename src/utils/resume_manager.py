@@ -5,8 +5,8 @@ Resume Manager - Task recovery and session resumption for analysis pipeline.
 Provides functionality to save task checkpoints, track execution state,
 and resume from the last successful step after interruption or failure.
 
-恢复管理器 - 分析流水线的任务恢复和会话恢复功能。
-提供保存任务检查点、跟踪执行状态以及在中断或失败后从最后一个成功步骤恢复的功能。
+恢复管理器 - 分析流水线的任务恢复和会话恢复功能.
+提供保存任务检查点,跟踪执行状态以及在中断或失败后从最后一个成功步骤恢复的功能.
 """
 
 import asyncio

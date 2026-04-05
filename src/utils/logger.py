@@ -8,10 +8,10 @@ Provides a centralized, structured logging infrastructure with:
 - Per-session isolated log files
 - CodeBuddy conversation record preservation
 
-结构化JSON日志系统。
-提供集中的、结构化的日志基础设施，包括：
-- JSON格式化日志条目，便于机器解析
-- 双输出（文件+控制台）支持
+结构化JSON日志系统.
+提供集中的,结构化的日志基础设施,包括:
+- JSON格式化日志条目,便于机器解析
+- 双输出(文件+控制台)支持
 - 按大小自动轮转日志文件
 - 每次会话隔离的日志文件
 - CodeBuddy对话记录保留
@@ -35,13 +35,13 @@ class JSONFormatter(logging.Formatter):
     Converts standard Python LogRecord objects into consistent JSON structures
     with timestamp, level, module, operation details, and optional context data.
 
-    将日志记录输出为结构化JSON的自定义格式化器。
-将标准Python LogRecord对象转换为一致的JSON结构，
-包含时间戳、级别、模块、操作详情和可选上下文数据。
+    将日志记录输出为结构化JSON的自定义格式化器.
+将标准Python LogRecord对象转换为一致的JSON结构,
+包含时间戳,级别,模块,操作详情和可选上下文数据.
 
     Attributes:
         include_extra: Whether to include extra fields from the LogRecord.
-                       是否包含LogRecord中的额外字段。
+                       是否包含LogRecord中的额外字段.
     """
 
     def __init__(self, include_extra: bool = True) -> None:
@@ -51,15 +51,15 @@ class JSONFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format a LogRecord as a JSON string.
 
-        将LogRecord格式化为JSON字符串。
+        将LogRecord格式化为JSON字符串.
 
         Args:
             record: The logging record to format.
-                   要格式化的日志记录。
+                   要格式化的日志记录.
 
         Returns:
             Single-line JSON string representation.
-            单行JSON字符串表示。
+            单行JSON字符串表示.
         """
         # Build base structure / 构建基础结构
         log_entry: Dict[str, Any] = {
@@ -100,13 +100,13 @@ class ConsoleFormatter(logging.Formatter):
     Produces formatted text output suitable for terminal display,
     with optional Rich library integration for colored output.
 
-    支持颜色（通过Rich库）的可读控制台格式化器。
-生成适合终端显示的格式化文本输出，
-可选集成Rich库以实现彩色输出。
+    支持颜色(通过Rich库)的可读控制台格式化器.
+生成适合终端显示的格式化文本输出,
+可选集成Rich库以实现彩色输出.
 
     Attributes:
         use_colors: Whether to apply ANSI color codes.
-                   是否应用ANSI颜色代码。
+                   是否应用ANSI颜色代码.
     """
 
     # ANSI color codes / ANSI颜色代码
@@ -126,15 +126,15 @@ class ConsoleFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format record as human-readable console text.
 
-        将记录格式化为可读的控制台文本。
+        将记录格式化为可读的控制台文本.
 
         Args:
             record: The logging record to format.
-                   要格式化的日志记录。
+                   要格式化的日志记录.
 
         Returns:
             Formatted string suitable for console output.
-             适合控制台输出的格式化字符串。
+             适合控制台输出的格式化字符串.
         """
         level_color = ""
         reset = ""
@@ -181,31 +181,31 @@ def setup_logger(
     Creates a logger with dual-output capability: rotating file handler for persistent
     structured logs, and optional stream handler for real-time console feedback.
 
-    初始化并配置具有文件和可选控制台处理程序的logger实例。
-创建具有双输出能力的logger：用于持久化结构化日志的旋转文件处理程序，
-以及用于实时控制台反馈的可选流处理程序。
+    初始化并配置具有文件和可选控制台处理程序的logger实例.
+创建具有双输出能力的logger:用于持久化结构化日志的旋转文件处理程序,
+以及用于实时控制台反馈的可选流处理程序.
 
     Args:
         name: Logger name (typically module or package name).
-              Logger名称（通常是模块或包名）。
+              Logger名称(通常是模块或包名).
         log_dir: Directory path for storing log files.
-                 存储日志文件的目录路径。
+                 存储日志文件的目录路径.
         level: Minimum log level ('DEBUG', 'INFO', 'WARNING', 'ERROR').
-               最小日志级别（'DEBUG'、'INFO'、'WARNING'、'ERROR'）。
+               最小日志级别('DEBUG','INFO','WARNING','ERROR').
         session_id: If provided, creates a per-session log file with this ID prefix.
-                   如果提供，则使用此前缀创建每次会话的日志文件。
+                   如果提供,则使用此前缀创建每次会话的日志文件.
         json_format: Use JSON formatting for file logs (recommended).
-                    文件日志使用JSON格式（推荐）。
+                    文件日志使用JSON格式(推荐).
         max_size_mb: Maximum size of each log file before rotation (MB).
-                    轮转前每个日志文件的最大大小（MB）。
+                    轮转前每个日志文件的最大大小(MB).
         backup_count: Number of rotated backup files to retain.
-                     保留的轮转备份文件数量。
+                     保留的轮转备份文件数量.
         console_output: Whether to also output to stderr/console.
-                      是否也输出到stderr/控制台。
+                      是否也输出到stderr/控制台.
 
     Returns:
         Configured Logger instance ready for use.
-         配置好的可使用的Logger实例。
+         配置好的可使用的Logger实例.
     """
     logger = logging.getLogger(name)
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))
@@ -261,17 +261,17 @@ def get_logger(name: str = "similar_project_rating") -> logging.Logger:
     Gets a previously configured logger. Call setup_logger() first
     if no configuration has been done yet.
 
-    按名称检索现有logger，或返回根logger。
-获取先前配置的logger。如果尚未进行配置，
-请先调用setup_logger()。
+    按名称检索现有logger,或返回根logger.
+获取先前配置的logger.如果尚未进行配置,
+请先调用setup_logger().
 
     Args:
         name: Logger identifier to retrieve.
-              要检索的logger标识符。
+              要检索的logger标识符.
 
     Returns:
         Logger instance (configured or basic fallback).
-         Logger实例（已配置的或基本后备）。
+         Logger实例(已配置的或基本后备).
     """
     return logging.getLogger(name)
 

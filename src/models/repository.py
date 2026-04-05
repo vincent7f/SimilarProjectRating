@@ -4,8 +4,8 @@ Repository Domain Models.
 Data classes representing GitHub repositories, releases, assets,
 and related metadata returned by the GitHub REST API.
 
-仓库领域模型。
-表示GitHub仓库、发布版本、资产以及GitHub REST API返回的相关元数据的dataclass。
+仓库领域模型.
+表示GitHub仓库,发布版本,资产以及GitHub REST API返回的相关元数据的dataclass.
 """
 
 from __future__ import annotations
@@ -22,17 +22,17 @@ class LicenseInfo:
     Represents the license detected or specified for a GitHub repository,
     including SPDX identifier and any additional details available.
 
-    仓库的软件许可证信息。
-表示为GitHub仓库检测或指定的许可证，
-包括SPDX标识符和任何其他可用细节。
+    仓库的软件许可证信息.
+表示为GitHub仓库检测或指定的许可证,
+包括SPDX标识符和任何其他可用细节.
 
     Attributes:
         spdx_id: SPDX license identifier (e.g., 'MIT', 'Apache-2.0', 'GPL-3.0').
-                 SPDX许可证标识符（例如'MIT'、'Apache-2.0'、'GPL-3.0'）。
+                 SPDX许可证标识符(例如'MIT','Apache-2.0','GPL-3.0').
         name: Full license name (e.g., 'MIT License').
-               完整许可证名称（例如'MIT License'）。
+               完整许可证名称(例如'MIT License').
         url: URL to the full license text.
-             完整许可证文本的URL。
+             完整许可证文本的URL.
     """
     spdx_id: str = ""
     name: str = ""
@@ -46,22 +46,22 @@ class Asset:
     Represents a file attached to a GitHub release, such as source archives,
     compiled binaries, or documentation packages.
 
-    发布资产（附加文件）信息。
-表示附加到GitHub发布的文件，如源代码归档、编译二进制文件或文档包。
+    发布资产(附加文件)信息.
+表示附加到GitHub发布的文件,如源代码归档,编译二进制文件或文档包.
 
     Attributes:
         id: Unique asset identifier.
-             唯一资产标识符。
+             唯一资产标识符.
         name: Asset filename (e.g., 'project-v1.0.0.zip').
-             资产文件名（例如'project-v1.0.0.zip'）。
+             资产文件名(例如'project-v1.0.0.zip').
         download_url: Direct download URL for the asset.
-                      资产的直接下载URL。
+                      资产的直接下载URL.
         size_bytes: File size in bytes.
-                    文件大小（字节）。
+                    文件大小(字节).
         content_type: MIME type of the asset file.
-                     资产文件的MIME类型。
+                     资产文件的MIME类型.
         download_count: Number of times this asset has been downloaded.
-                       此资产的下载次数。
+                       此资产的下载次数.
     """
     id: int = 0
     name: str = ""
@@ -78,26 +78,26 @@ class Release:
     Represents a published release on a GitHub repository, including
     its tag, publication date, and downloadable archive URLs.
 
-    GitHub发布版本信息。
-表示GitHub仓库上的已发布版本，包括其标签、发布日期和可下载的归档URL。
+    GitHub发布版本信息.
+表示GitHub仓库上的已发布版本,包括其标签,发布日期和可下载的归档URL.
 
     Attributes:
         tag_name: Git tag identifying this release (e.g., 'v1.0.0').
-                  标识此版本的Git标签（例如'v1.0.0'）。
+                  标识此版本的Git标签(例如'v1.0.0').
         name: Human-readable release name (may differ from tag).
-              可读的发布名称（可能与标签不同）。
+              可读的发布名称(可能与标签不同).
         body: Release notes/description body in Markdown format.
-              Markdown格式的发布说明/描述正文。
+              Markdown格式的发布说明/描述正文.
         published_at: Date and time when the release was published.
-                      发布日期和时间。
+                      发布日期和时间.
         archive_url: URL to download the source code zipball for this release.
-                    下载此发布版本的源代码zipball的URL。
+                    下载此发布版本的源代码zipball的URL.
         is_prerelease: Whether this is a pre-release (alpha/beta/rc).
-                       是否为预发布版（alpha/beta/rc）。
+                       是否为预发布版(alpha/beta/rc).
         is_latest: Whether this is the latest release for the repository.
-                   是否为仓库的最新发布版本。
+                   是否为仓库的最新发布版本.
         assets: List of files attached to this release.
-                附加到此发布的文件列表。
+                附加到此发布的文件列表.
     """
     tag_name: str = ""
     name: str = ""
@@ -115,13 +115,13 @@ class Release:
         Attempts to parse a semver-compatible version string from the tag,
         stripping 'v' prefix if present.
 
-        从tag_name中提取语义化版本号。
-尝试从标签中解析semver兼容的版本字符串，
-如果存在则去除'v'前缀。
+        从tag_name中提取语义化版本号.
+尝试从标签中解析semver兼容的版本字符串,
+如果存在则去除'v'前缀.
 
         Returns:
             Cleaned version string (e.g., '1.0.0' from 'v1.0.0').
-            清理后的版本字符串（例如从'v1.0.0'得到'1.0.0'）。
+            清理后的版本字符串(例如从'v1.0.0'得到'1.0.0').
         """
         version = self.tag_name.lstrip("vV")
         return version.split("/")[0]  # Handle tags like 'release/v1.0'
@@ -135,47 +135,47 @@ class Repository:
     Contains metadata retrieved from the GitHub REST API including statistics,
     timestamps, and classification data.
 
-    表示GitHub项目的核心仓库模型。
-这是分析流水线中使用的主要领域实体。
-包含从GitHub REST API检索到的元数据，包括统计信息、时间戳和分类数据。
+    表示GitHub项目的核心仓库模型.
+这是分析流水线中使用的主要领域实体.
+包含从GitHub REST API检索到的元数据,包括统计信息,时间戳和分类数据.
 
     Attributes:
         id: Unique GitHub repository identifier.
-             唯一GitHub仓库标识符。
+             唯一GitHub仓库标识符.
         name: Repository name (without owner).
-             仓库名称（不含所有者）。
+             仓库名称(不含所有者).
         full_name: Full repository identifier in 'owner/repo' format.
-                   完整仓库标识符，格式为'owner/repo'。
+                   完整仓库标识符,格式为'owner/repo'.
         description: Short description of the project's purpose and functionality.
-                     项目用途和功能的简短描述。
+                     项目用途和功能的简短描述.
         url: HTML URL to the repository page.
-             仓库页面的HTML URL。
+             仓库页面的HTML URL.
         stars: Total star count (popularity indicator).
-               总star数（受欢迎程度指标）。
+               总star数(受欢迎程度指标).
         forks: Total fork count (reuse indicator).
-               总fork数（复用指标）。
+               总fork数(复用指标).
         open_issues: Count of currently open issues.
-                     当前开放的Issue数量。
+                     当前开放的Issue数量.
         watchers: Count of users watching this repository.
-                  关注此仓库的用户数量。
+                  关注此仓库的用户数量.
         primary_language: Main programming language (e.g., 'Python', 'TypeScript').
-                         主要编程语言（例如'Python'、'TypeScript'）。
+                         主要编程语言(例如'Python','TypeScript').
         topics: Repository topic tags assigned by maintainers.
-                维护者分配的仓库主题标签。
+                维护者分配的仓库主题标签.
         created_at: Repository creation date and time.
-                   仓库创建日期和时间。
+                   仓库创建日期和时间.
         updated_at: Last time metadata was updated by GitHub.
-                   GitHub最后更新元数据的时间。
+                   GitHub最后更新元数据的时间.
         pushed_at: Last commit push date and time.
-                  最后一次提交推送的日期和时间。
+                  最后一次提交推送的日期和时间.
         default_branch: Default branch name (usually 'main' or 'master').
-                        默认分支名称（通常为'main'或'master'）。
+                        默认分支名称(通常为'main'或'master').
         license_info: License information if declared.
-                      声明的许可证信息（如有）。
+                      声明的许可证信息(如有).
         archived: Whether the repository has been archived (read-only).
-                 仓库是否已被归档（只读）。
+                 仓库是否已被归档(只读).
         size_kb: Repository size in kilobytes (approximate).
-                 仓库大小（千字节）（近似值）。
+                 仓库大小(千字节)(近似值).
     """
     id: int = 0
     name: str = ""
@@ -204,17 +204,17 @@ class Repository:
         Maps raw API response fields to typed Repository attributes with
         appropriate parsing for dates, nested objects, and lists.
 
-        从GitHub API JSON响应构造Repository实例。
-将原始API响应字段映射到类型化的Repository属性，
-对日期、嵌套对象和列表进行适当的解析。
+        从GitHub API JSON响应构造Repository实例.
+将原始API响应字段映射到类型化的Repository属性,
+对日期,嵌套对象和列表进行适当的解析.
 
         Args:
             data: Dictionary from GitHub REST API response payload.
-                  来自GitHub REST API响应负载的字典。
+                  来自GitHub REST API响应负载的字典.
 
         Returns:
             Fully populated Repository instance.
-            完全填充的Repository实例。
+            完全填充的Repository实例.
         """
         from src.models.common import _parse_datetime
 
@@ -253,11 +253,11 @@ class Repository:
     def age_days(self) -> int:
         """Calculate repository age in days since creation.
 
-        计算自创建以来的仓库天数。
+        计算自创建以来的仓库天数.
 
         Returns:
             Number of days since creation, or 0 if date unknown.
-            自创建以来的天数，如日期未知则返回0。
+            自创建以来的天数,如日期未知则返回0.
         """
         if not self.created_at:
             return 0
@@ -268,11 +268,11 @@ class Repository:
     def days_since_last_push(self) -> int:
         """Calculate days since the last commit push.
 
-        计算自上次提交推送以来的天数。
+        计算自上次提交推送以来的天数.
 
         Returns:
             Days since last push, or -1 if unknown.
-            自上次推送以来的天数，未知则返回-1。
+            自上次推送以来的天数,未知则返回-1.
         """
         if not self.pushed_at:
             return -1
@@ -283,15 +283,15 @@ class Repository:
 def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
     """Parse ISO 8601 datetime string to datetime object.
 
-    将ISO 8601日期时间字符串解析为datetime对象。
+    将ISO 8601日期时间字符串解析为datetime对象.
 
     Args:
         value: ISO 8601 formatted datetime string or None.
-               ISO 8601格式的日期时间字符串或None。
+               ISO 8601格式的日期时间字符串或None.
 
     Returns:
         Parsed datetime object or None if input is invalid/empty.
-        解析后的datetime对象，如输入无效/空则返回None。
+        解析后的datetime对象,如输入无效/空则返回None.
     """
     if not value:
         return None

@@ -4,9 +4,9 @@ File Manager - Temporary file and report output management.
 Handles temporary directory creation for code downloads, archive extraction,
 result serialization, and cleanup operations during analysis execution.
 
-文件管理器 - 临时文件和报告输出管理。
-处理代码下载、归档解压、结果序列化和分析执行期间
-清理操作的临时目录创建。
+文件管理器 - 临时文件和报告输出管理.
+处理代码下载,归档解压,结果序列化和分析执行期间
+清理操作的临时目录创建.
 """
 
 from __future__ import annotations
@@ -26,15 +26,15 @@ class FileManager:
     Provides safe abstractions for creating isolated working directories per-project,
     extracting archives, writing structured reports, and cleaning up resources.
 
-    管理代码下载临时目录和报告输出的文件系统操作。
-为每个项目创建隔离的工作目录、提取归档、编写结构化报告
-和清理资源的安全抽象层。
+    管理代码下载临时目录和报告输出的文件系统操作.
+为每个项目创建隔离的工作目录,提取归档,编写结构化报告
+和清理资源的安全抽象层.
 
     Attributes:
         base_temp_dir: Root directory for all temporary files.
-                      所有临时文件的根目录。
+                      所有临时文件的根目录.
         output_dir: Directory where final reports are written.
-                   最终报告写入的目录。
+                   最终报告写入的目录.
     """
 
     def __init__(
@@ -44,13 +44,13 @@ class FileManager:
     ) -> None:
         """Initialize with configurable base paths.
 
-        使用可配置的基础路径初始化。
+        使用可配置的基础路径初始化.
 
         Args:
             base_temp_dir: Root path for temporary extraction directories.
-                          临时提取目录的根路径。
+                          临时提取目录的根路径.
             output_dir: Path for writing analysis result reports.
-                       写入分析结果报告的路径。
+                       写入分析结果报告的路径.
         """
         self.base_temp_dir = Path(base_temp_dir)
         self.output_dir = Path(output_dir)
@@ -70,17 +70,17 @@ class FileManager:
         full name (with sanitized characters). Safe to call multiple times for same
         project (returns existing path).
 
-        为分析特定项目创建隔离的工作区目录。
-在base_temp_dir下创建以项目全名命名的唯一子目录（字符已净化）。
-对同一项目多次调用是安全的（返回现有路径）。
+        为分析特定项目创建隔离的工作区目录.
+在base_temp_dir下创建以项目全名命名的唯一子目录(字符已净化).
+对同一项目多次调用是安全的(返回现有路径).
 
         Args:
             repo_full_name: Repository identifier ('owner/repo').
-                           仓库标识符（'owner/repo'）。
+                           仓库标识符('owner/repo').
 
         Returns:
             Path to the workspace directory ready for use.
-             可使用的工作区目录路径。
+             可使用的工作区目录路径.
         """
         safe_name = repo_full_name.replace("/", "_").replace("\\", "_")
         workspace = self.base_temp_dir / safe_name
@@ -90,15 +90,15 @@ class FileManager:
     def get_code_directory(self, repo_full_name: str) -> Path:
         """Get or create the expected extracted code directory for a project.
 
-        获取或创建项目的预期解压代码目录。
+        获取或创建项目的预期解压代码目录.
 
         Args:
             repo_full_name: Repository identifier.
-                           仓库标识符。
+                           仓库标识符.
 
         Returns:
             Path where extracted code should reside.
-             解压代码应位于的路径。
+             解压代码应位于的路径.
         """
         workspace = self.create_project_workspace(repo_full_name)
         code_dir = workspace / "code"
@@ -108,15 +108,15 @@ class FileManager:
     def cleanup_project_workspace(self, repo_full_name: str) -> bool:
         """Remove all temporary files for a completed project analysis.
 
-        删除已完成项目分析的所有临时文件。
+        删除已完成项目分析的所有临时文件.
 
         Args:
             repo_full_name: Repository identifier whose files to clean.
-                           要清理的仓库标识符。
+                           要清理的仓库标识符.
 
         Returns:
             True if removal succeeded, False otherwise (e.g., not found).
-             删除成功则返回True，否则返回False（例如未找到）。
+             删除成功则返回True,否则返回False(例如未找到).
         """
         safe_name = repo_full_name.replace("/", "_").replace("\\", "_")
         workspace = self.base_temp_dir / safe_name
@@ -128,11 +128,11 @@ class FileManager:
     def cleanup_all_workspaces(self) -> int:
         """Remove all temporary workspace directories.
 
-        删除所有临时工作区目录。
+        删除所有临时工作区目录.
 
         Returns:
             Number of workspaces removed.
-             删除的工作区数量。
+             删除的工作区数量.
         """
         count = 0
         for item in self.base_temp_dir.iterdir():
@@ -156,19 +156,19 @@ class FileManager:
         contents into the workspace/code directory, and returns the root path
         of the extracted code.
 
-        将仓库归档下载并提取到项目工作区中。
-从提供的URL下载（通常是GitHub zipball URL），将内容提取到workspace/code目录，
-并返回提取代码的根路径。
+        将仓库归档下载并提取到项目工作区中.
+从提供的URL下载(通常是GitHub zipball URL),将内容提取到workspace/code目录,
+并返回提取代码的根路径.
 
         Args:
             repo_full_name: Repository identifier for workspace naming.
-                           用于工作区命名的仓库标识符。
+                           用于工作区命名的仓库标识符.
             archive_url: Direct download URL for the archive file.
-                        归档文件的直接下载URL。
+                        归档文件的直接下载URL.
 
         Returns:
             Path to the extracted code root directory, or None on failure.
-             解压后的代码根目录路径，失败时返回None。
+             解压后的代码根目录路径,失败时返回None.
         """
         import httpx
 
@@ -191,7 +191,7 @@ class FileManager:
             with zipfile.ZipFile(archive_path, "r") as zf:
                 zf.extractall(extract_target)
 
-            # GitHub zipballs contain a single root folder; find it / GitHub zipball包含单个根文件夹；找到它
+            # GitHub zipballs contain a single root folder; find it / GitHub zipball包含单个根文件夹;找到它
             extracted_items = list(extract_target.iterdir())
             if len(extracted_items) == 1 and extracted_items[0].is_dir():
                 code_root = extracted_items[0]
@@ -233,19 +233,19 @@ class FileManager:
     ) -> Path:
         """Write analysis results to a report file in the output directory.
 
-        将分析结果写入输出目录中的报告文件。
+        将分析结果写入输出目录中的报告文件.
 
         Args:
             data: Report data dictionary to serialize.
-                 要序列化的报告数据字典。
+                 要序列化的报告数据字典.
             filename: Base filename (without extension).
-                     基本文件名（不带扩展名）。
+                     基本文件名(不带扩展名).
             format_type: Output format ('json', 'markdown', 'md', 'txt').
-                        输出格式（'json'、'markdown'、'md'、'txt'）。
+                        输出格式('json','markdown','md','txt').
 
         Returns:
             Path to the written report file.
-             写入的报告文件路径。
+             写入的报告文件路径.
         """
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -267,15 +267,15 @@ class FileManager:
     def _format_markdown(self, data: Dict[str, Any]) -> str:
         """Convert structured data to Markdown report format.
 
-        将结构化数据转换为Markdown报告格式。
+        将结构化数据转换为Markdown报告格式.
 
         Args:
             data: Report data dictionary.
-                 报告数据字典。
+                 报告数据字典.
 
         Returns:
             Formatted Markdown string.
-             格式化的Markdown字符串。
+             格式化的Markdown字符串.
         """
         lines = [f"# Analysis Report: {data.get('query', 'Untitled')}", ""]
         lines.append(f"**Generated:** {_now_iso()}")
@@ -306,15 +306,15 @@ class FileManager:
     def get_workspace_size_bytes(self, repo_full_name: str) -> int:
         """Calculate total size of a project's workspace in bytes.
 
-        计算项目工作区的总大小（字节）。
+        计算项目工作区的总大小(字节).
 
         Args:
             repo_full_name: Repository identifier.
-                           仓库标识符。
+                           仓库标识符.
 
         Returns:
             Total size in bytes, or 0 if workspace doesn't exist.
-             总字节大小，如工作区不存在则为0。
+             总字节大小,如工作区不存在则为0.
         """
         safe_name = repo_full_name.replace("/", "_").replace("\\", "_")
         workspace = self.base_temp_dir / safe_name
@@ -325,11 +325,11 @@ class FileManager:
     def get_all_workspace_sizes(self) -> Dict[str, int]:
         """Get sizes of all current workspaces.
 
-        获取所有当前工作区的大小。
+        获取所有当前工作区的大小.
 
         Returns:
             Mapping of repo_full_name -> size in bytes.
-             repo_full_name -> 字节大小的映射。
+             repo_full_name -> 字节大小的映射.
         """
         sizes: Dict[str, int] = {}
         for item in self.base_temp_dir.iterdir():
@@ -343,7 +343,7 @@ class FileManager:
 def _now_iso() -> str:
     """Return current UTC time as ISO 8601 string.
 
-    以ISO 8601字符串形式返回当前UTC时间。
+    以ISO 8601字符串形式返回当前UTC时间.
     """
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 

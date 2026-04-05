@@ -6,9 +6,9 @@ Extends the standard AnalysisPipeline with support for differentiated
 concurrency limits for AI-dependent and non-AI tasks, and integrated 
 with the resume checkpoint system.
 
-支持AI和非AI任务并行控制的增强分析流水线。
-扩展标准AnalysisPipeline，支持AI依赖任务和非AI任务的差异化并发限制，
-并与恢复检查点系统集成。
+支持AI和非AI任务并行控制的增强分析流水线.
+扩展标准AnalysisPipeline,支持AI依赖任务和非AI任务的差异化并发限制,
+并与恢复检查点系统集成.
 """
 
 import asyncio
@@ -40,10 +40,10 @@ class EnhancedAnalysisPipeline:
     - AI tasks: Limited concurrency (default: 1) to avoid overwhelming LLM
     - Non-AI tasks: Higher concurrency (default: 5) for CPU/IO-bound work
     
-    具有AI/非AI并行执行控制的增强分析流水线。
-    管理具有不同类型任务可配置并发限制的完整分析工作流。实现最优资源使用：
-    - AI任务：有限并发（默认：1），避免压垮LLM
-    - 非AI任务：更高并发（默认：5），用于CPU/IO密集型工作
+    具有AI/非AI并行执行控制的增强分析流水线.
+    管理具有不同类型任务可配置并发限制的完整分析工作流.实现最优资源使用:
+    - AI任务:有限并发(默认:1),避免压垮LLM
+    - 非AI任务:更高并发(默认:5),用于CPU/IO密集型工作
     """
     
     def __init__(

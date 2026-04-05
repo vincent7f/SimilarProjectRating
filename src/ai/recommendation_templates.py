@@ -4,9 +4,9 @@ Recommendation Output Templates.
 Provides template strings and formatting helpers for consistent
 recommendation report generation across terminal, Markdown, and JSON outputs.
 
-推荐输出模板。
-为终端、Markdown和JSON输出的统一推荐报告生成提供
-模板字符串和格式化辅助工具。
+推荐输出模板.
+为终端,Markdown和JSON输出的统一推荐报告生成提供
+模板字符串和格式化辅助工具.
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ MARKDOWN_REPORT_TEMPLATE = """\
 
 
 MARKDOWN_PROJECT_SECTION_TEMPLATE = """\
-### #{rank}. **{name}** `{tier}` — Score: **{score}/100**
+### #{rank}. **{name}** `{tier}` - Score: **{score}/100**
 
 | Metric | Value |
 |--------|-------|
@@ -133,17 +133,17 @@ JSON_REPORT_STRUCTURE = {
 def format_score_bar(score: float, width: int = 20) -> str:
     """Create a visual ASCII bar representing a 0-100 score.
 
-    创建表示0-100分数的可视化ASCII条形图。
+    创建表示0-100分数的可视化ASCII条形图.
 
     Args:
         score: Numeric score between 0 and 100.
-               0到100之间的数值分数。
+               0到100之间的数值分数.
         width: Character width of the bar.
-                 条形的字符宽度。
+                 条形的字符宽度.
 
     Returns:
         String like '[████████░░░░░░░░] 50%'.
-         类似'[████████░░░░░░░░] 50%'的字符串。
+         类似'[████████░░░░░░░░] 50%'的字符串.
     """
     filled = int((score / 100.0) * width)
     empty = width - filled
@@ -154,15 +154,15 @@ def format_score_bar(score: float, width: int = 20) -> str:
 def format_tier_badge(tier: str) -> str:
     """Format a tier label with color-like prefix for terminals.
 
-    为终端格式化带颜色类前缀的等级标签。
+    为终端格式化带颜色类前缀的等级标签.
 
     Args:
         tier: Single character tier ('S', 'A', 'B', 'C', 'D').
-              单字符等级（'S'、'A'、'B'、'C'、'D'）。
+              单字符等级('S','A','B','C','D').
 
     Returns:
         Formatted badge string like '[S]'.
-         格式化的徽章字符串如'[S]'。
+         格式化的徽章字符串如'[S]'.
     """
     badges = {
         "S": "[S]",  # Would be colored green in real terminal / 在真实终端中会显示绿色
@@ -177,17 +177,17 @@ def format_tier_badge(tier: str) -> str:
 def format_highlights_list(highlights: List[str], indent: int = 4) -> str:
     """Format highlight items into a bulleted list string.
 
-    将高亮项格式化为项目符号列表字符串。
+    将高亮项格式化为项目符号列表字符串.
 
     Args:
         highlights: List of highlight strings.
-                   高亮字符串列表。
+                   高亮字符串列表.
         indent: Spaces of indentation per item.
-                 每项缩进空格数。
+                 每项缩进空格数.
 
     Returns:
         Multi-line bulleted string.
-         多行项目符号字符串。
+         多行项目符号字符串.
     }
     prefix = " " * indent
     if not highlights:
@@ -198,17 +198,17 @@ def format_highlights_list(highlights: List[str], indent: int = 4) -> str:
 def format_concerns_list(concerns: List[str], indent: int = 4) -> str:
     """Format concern items into a bulleted list string.
 
-    将关注项格式化为项目符号列表字符串。
+    将关注项格式化为项目符号列表字符串.
 
     Args:
         concerns: List of concern strings.
-                  关注字符串列表。
+                  关注字符串列表.
         indent: Spaces of indentation per item.
-                 每项缩进空格数。
+                 每项缩进空格数.
 
     Returns:
         Multi-line bulleted string.
-         多行项目符号字符串。
+         多行项目符号字符串.
     }
     prefix = " " * indent
     if not concerns:
@@ -219,17 +219,17 @@ def format_concerns_list(concerns: List[str], indent: int = 4) -> str:
 def truncate_text(text: str, max_length: int = 80) -> str:
     """Truncate text with ellipsis if it exceeds maximum length.
 
-    如果文本超过最大长度则截断并加省略号。
+    如果文本超过最大长度则截断并加省略号.
 
     Args:
         text: Input text string.
-              输入文本字符串。
+              输入文本字符串.
         max_length: Maximum allowed character count.
-                   最大允许字符数。
+                   最大允许字符数.
 
     Returns:
         Truncated string or original if within limit.
-             截断字符串或如未超限则返回原文。
+             截断字符串或如未超限则返回原文.
     """
     if len(text) <= max_length:
         return text

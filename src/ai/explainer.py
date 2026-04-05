@@ -5,9 +5,9 @@ Produces human-readable explanations comparing analyzed projects, including
 strengths, weaknesses, use case recommendations, and actionable advice.
 Outputs are generated in both Chinese and English for accessibility.
 
-解释生成器 - 双语自然语言解释生成器。
-生成比较分析项目的可读性解释，包括优势、弱点、用例建议
-和可行建议。输出同时以中文和英文生成以提高可访问性。
+解释生成器 - 双语自然语言解释生成器.
+生成比较分析项目的可读性解释,包括优势,弱点,用例建议
+和可行建议.输出同时以中文和英文生成以提高可访问性.
 """
 
 from __future__ import annotations
@@ -30,16 +30,16 @@ class Explainer:
     that explain why certain projects are recommended over others, what their
     trade-offs are, and how users should make their final decision.
 
-    用于项目分析结果的双语解释生成器。
-将结构化比较数据转换为自然语言叙述，
-解释为什么推荐某些项目而非其他项目，它们的权衡是什么，
-以及用户应如何做出最终决定。
+    用于项目分析结果的双语解释生成器.
+将结构化比较数据转换为自然语言叙述,
+解释为什么推荐某些项目而非其他项目,它们的权衡是什么,
+以及用户应如何做出最终决定.
 
     Attributes:
         llm_client: LLM client for generating explanations.
-                   用于生成解释的LLM客户端。
+                   用于生成解释的LLM客户端.
         language: Primary output language ('bilingual', 'english', 'chinese').
-                 主要输出语言（'bilingual'、'english'、'chinese'）。
+                 主要输出语言('bilingual','english','chinese').
     """
 
     def __init__(
@@ -49,13 +49,13 @@ class Explainer:
     ) -> None:
         """Initialize explainer with configuration.
 
-        使用配置初始化解释生成器。
+        使用配置初始化解释生成器.
 
         Args:
             llm_client: LLM client for AI-generated explanations (optional).
-                      用于AI生成解释的LLM客户端（可选）。
+                      用于AI生成解释的LLM客户端(可选).
             language: Output language mode.
-                     输出语言模式。
+                     输出语言模式.
         """
         self.llm_client = llm_client
         self.language = language
@@ -68,24 +68,24 @@ class Explainer:
     ) -> Dict[str, Any]:
         """Generate a full bilingual comparison report.
 
-        生成完整的双语比较报告。
+        生成完整的双语比较报告.
 
         Args:
             ranked_projects: Sorted list of ranked projects to compare.
-                           要比较的已排序列表。
+                           要比较的已排序列表.
             query: The user's original search intent.
-                  用户原始搜索意图。
+                  用户原始搜索意图.
             include_comparison_table: Whether to embed a metrics table.
-                                    是否嵌入指标表格。
+                                    是否嵌入指标表格.
 
         Returns:
             Dictionary with report sections: overview, details, conclusion.
-             包含报告章节的字典：overview、details、conclusion。
+             包含报告章节的字典:overview,details,conclusion.
         """
         if not ranked_projects:
             return {
                 "overview_en": "No projects were found for comparison.",
-                "overview_zh": "未找到可供比较的项目。",
+                "overview_zh": "未找到可供比较的项目.",
                 "details": [],
                 "conclusion_en": "",
                 "conclusion_zh": "",
@@ -128,17 +128,17 @@ class Explainer:
     ) -> Dict[str, str]:
         """Generate a focused explanation for a single recommended project.
 
-        为单个推荐项目生成聚焦的解释。
+        为单个推荐项目生成聚焦的解释.
 
         Args:
             ranked: The project to explain.
-                  要解释的项目。
+                  要解释的项目.
             alternatives: Other projects for context (optional).
-                        其他上下文项目（可选）。
+                        其他上下文项目(可选).
 
         Returns:
             Dictionary with 'english' and 'chinese' text entries.
-             包含'english'和'chinese'文本条目的字典。
+             包含'english'和'chinese'文本条目的字典.
         """
         en_text = (
             f"## {ranked.project.full_name} (Tier {ranked.tier.value}, "
@@ -146,31 +146,31 @@ class Explainer:
         )
         zh_text = (
             f"## {ranked.project.full_name} "
-            f"(等级{ranked.tier.value}，得分：{ranked.score.comprehensive:.1f}/100)\n\n"
+            f"(等级{ranked.tier.value},得分:{ranked.score.comprehensive:.1f}/100)\n\n"
         )
 
         if ranked.highlights:
             en_text += "**Strengths:**\n"
-            zh_text += "**优势：**\n"
+            zh_text += "**优势:**\n"
             for h in ranked.highlights:
                 en_text += f"- {h}\n"
                 zh_text += f"- {h}\n"
 
         if ranked.concerns:
             en_text += "\n**Considerations:**\n"
-            zh_text += "\n**注意事项：**\n"
+            zh_text += "\n**注意事项:**\n"
             for c in ranked.concerns:
                 en_text += f"- {c}\n"
                 zh_text += f"- {c}\n"
 
         if ranked.recommendation_reason:
             en_text += f"\n> **Verdict:** {ranked.recommendation_reason}\n"
-            zh_text += f"\n> **结论：** {ranked.recommendation_reason}\n"
+            zh_text += f"\n> **结论:** {ranked.recommendation_reason}\n"
 
         return {"english": en_text, "chinese": zh_text}
 
     # ------------------------------------------------------------------
-    # Template-based Explanations (no AI needed) / 基于模板的解释（无需AI）
+    # Template-based Explanations (no AI needed) / 基于模板的解释(无需AI)
     # ------------------------------------------------------------------
 
     def _build_overview_en(
@@ -178,7 +178,7 @@ class Explainer:
     ) -> str:
         """Build English overview section.
 
-        构建英文概览部分。"""
+        构建英文概览部分."""
         lines: List[str] = []
 
         top = ranked[0]
@@ -211,24 +211,24 @@ class Explainer:
     ) -> str:
         """Build Chinese overview section.
 
-        构建中文概览部分。"""
+        构建中文概览部分."""
         lines: List[str] = []
 
         top = ranked[0]
         lines.append(
-            f"我们分析了与您的查询相关的 **{len(ranked)}** 个GitHub项目。"
+            f"我们分析了与您的查询相关的 **{len(ranked)}** 个GitHub项目."
         )
         lines.append(
             f"首选推荐是 **{top.project.full_name}** "
-            f"（得分：**{top.score.comprehensive:.1f}**，等级：**{top.tier.value}**），"
-            f"拥有 **{top.project.stars:,}** 个Star。\n"
+            f"(得分:**{top.score.comprehensive:.1f}**,等级:**{top.tier.value}**),"
+            f"拥有 **{top.project.stars:,}** 个Star.\n"
         )
 
         if len(ranked) > 1:
             second = ranked[1]
             lines.append(
                 f"一个强有力的备选方案是 **{second.project.full_name}** "
-                f"（得分：{second.score.comprehensive:.1f}）。"
+                f"(得分:{second.score.comprehensive:.1f})."
             )
 
         return "\n".join(lines)
@@ -238,7 +238,7 @@ class Explainer:
     ) -> List[Dict[str, Any]]:
         """Build per-project detail entries.
 
-        构建每个项目的详细条目。"""
+        构建每个项目的详细条目."""
         details: List[Dict[str, Any]] = []
 
         for rp in ranked:
@@ -264,7 +264,7 @@ class Explainer:
     ) -> ComparisonTable:
         """Build a cross-project metrics comparison table.
 
-        构建跨项目指标比较表格。"""
+        构建跨项目指标比较表格."""
         headers = ["Rank", "Project", "Stars", "Score", "Tier", "Language"]
 
         rows: List[Dict[str, Any]] = []
@@ -289,7 +289,7 @@ class Explainer:
     ) -> str:
         """Template-based English conclusion fallback.
 
-        基于模板的英文结论后备。"""
+        基于模板的英文结论后备."""
         if not ranked:
             return "No sufficient data for a conclusion."
 
@@ -325,17 +325,17 @@ class Explainer:
     ) -> str:
         """Template-based Chinese conclusion fallback.
 
-        基于模板的中文结论后备。"""
+        基于模板的中文结论后备."""
         if not ranked:
-            return "没有足够的数据来得出结论。"
+            return "没有足够的数据来得出结论."
 
         top = ranked[0]
 
         parts: List[str] = [
             f"### 推荐总结\n",
-            f"基于对{len(ranked)}个项目的多维度分析，",
-            f"我们推荐 **{top.project.full_name}** 作为最佳选择。\n",
-            f"\n#### 为什么选择它？\n",
+            f"基于对{len(ranked)}个项目的多维度分析,",
+            f"我们推荐 **{top.project.full_name}** 作为最佳选择.\n",
+            f"\n#### 为什么选择它?\n",
         ]
 
         if top.highlights:
@@ -343,15 +343,15 @@ class Explainer:
                 parts.append(f"- {h}")
 
         if top.concerns:
-            parts.append("\n#### 注意事项：\n")
+            parts.append("\n#### 注意事项:\n")
             for c in top.concerns[:2]:
                 parts.append(f"- {c}")
 
         if len(ranked) > 1:
             alt = ranked[1]
             parts.append(
-                f"\n如需备选方案，可考虑 **{alt.project.full_name}** "
-                f"（得分：{alt.score.comprehensive:.1f}）。"
+                f"\n如需备选方案,可考虑 **{alt.project.full_name}** "
+                f"(得分:{alt.score.comprehensive:.1f})."
             )
 
         return "".join(parts)
@@ -367,17 +367,17 @@ class Explainer:
     ) -> Dict[str, str]:
         """Use LLM to generate richer bilingual conclusions.
 
-        使用LLM生成更丰富的双语结论。
+        使用LLM生成更丰富的双语结论.
 
         Args:
             ranked: Ranked projects.
-                 已排名项目。
+                 已排名项目.
             query: User's original query.
-                  用户原始查询。
+                  用户原始查询.
 
         Returns:
             Dictionary with 'conclusion_en' and 'conclusion_zh'.
-             包含'conclusion_en'和'conclusion_zh'的字典。
+             包含'conclusion_en'和'conclusion_zh'的字典.
         """
         try:
             from src.ai.prompts import EXPLANATION_PROMPT
@@ -421,17 +421,17 @@ class Explainer:
     def _split_bilingual_output(text: str) -> Dict[str, str]:
         """Attempt to split mixed bilingual output into separate EN/ZH sections.
 
-        尝试将混合的双语输出拆分为单独的英文/中文部分。
+        尝试将混合的双语输出拆分为单独的英文/中文部分.
 
         Args:
             text: Raw output possibly containing both languages.
-                  可能包含两种语言的原始输出。
+                  可能包含两种语言的原始输出.
 
         Returns:
             Dictionary with 'conclusion_en' and 'conclusion_zh'.
-             包含'conclusion_en'和'conclusion_zh'的字典。
+             包含'conclusion_en'和'conclusion_zh'的字典.
         """
-        # Simple heuristic: split on Chinese section markers / 简单启发式：按中文部分标记分割
+        # Simple heuristic: split on Chinese section markers / 简单启发式:按中文部分标记分割
         en_parts: List[str] = []
         zh_parts: List[str] = []
         current_section: str = "en"

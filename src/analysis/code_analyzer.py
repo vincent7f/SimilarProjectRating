@@ -6,10 +6,10 @@ coding conventions, test coverage, dependency management, documentation
 completeness, and architecture clarity. Uses rule-based static analysis
 with optional tool integration (radon for complexity).
 
-代码质量分析器。
-在多个质量维度上分析下载的项目代码：
-编码规范、测试覆盖率、依赖管理、文档完整性和架构清晰度。
-使用基于规则的静态分析，可选工具集成（radon用于复杂度分析）。
+代码质量分析器.
+在多个质量维度上分析下载的项目代码:
+编码规范,测试覆盖率,依赖管理,文档完整性和架构清晰度.
+使用基于规则的静态分析,可选工具集成(radon用于复杂度分析).
 """
 
 from __future__ import annotations
@@ -35,13 +35,13 @@ class CodeAnalyzer:
     multi-dimensional quality assessment without requiring compilation or execution.
     Uses filesystem patterns, AST parsing (for Python), and configurable rules.
 
-    使用基于规则启发式的静态代码质量分析器。
-在下载/提取后检查项目的代码库并生成多维质量评估，
-无需编译或执行。使用文件系统模式、AST解析（针对Python）和可配置规则。
+    使用基于规则启发式的静态代码质量分析器.
+在下载/提取后检查项目的代码库并生成多维质量评估,
+无需编译或执行.使用文件系统模式,AST解析(针对Python)和可配置规则.
 
     Attributes:
         file_manager: FileManager instance for workspace operations.
-                     用于工作区操作的FileManager实例。
+                     用于工作区操作的FileManager实例.
     """
 
     # Known test directory names / 已知测试目录名
@@ -86,15 +86,15 @@ class CodeAnalyzer:
     ) -> CodeQualityMetrics:
         """Analyze the code quality of a given repository.
 
-        分析给定仓库的代码质量。
+        分析给定仓库的代码质量.
 
         Args:
             repository: Repository metadata to analyze.
-                       要分析的仓库元数据。
+                       要分析的仓库元数据.
 
         Returns:
             Complete CodeQualityMetrics assessment.
-             完整的CodeQualityMetrics评估。
+             完整的CodeQualityMetrics评估.
         """
         start_time = time.time()
 
@@ -104,7 +104,7 @@ class CodeAnalyzer:
         )
 
         try:
-            # Step 1: Download and extract / 步骤1：下载和解压
+            # Step 1: Download and extract / 步骤1:下载和解压
             code_dir = await self._get_code_directory(repository)
 
             if not code_dir:
@@ -113,7 +113,7 @@ class CodeAnalyzer:
                     errors=[f"Failed to download/extract code for {repository.full_name}"],
                 )
 
-            # Step 2: Run all analysis dimensions in parallel / 步骤2：并行运行所有分析维度
+            # Step 2: Run all analysis dimensions in parallel / 步骤2:并行运行所有分析维度
             style_result = self._analyze_code_style(code_dir)
             test_result = self._analyze_test_coverage(code_dir)
             dep_result = self._analyze_dependencies(code_dir)
@@ -140,7 +140,7 @@ class CodeAnalyzer:
                 + doc_result * weights["docs"] * 100
                 + arch_result * weights["arch"] * 100
             )
-            # Simplified: use direct scores / 简化：使用直接分数
+            # Simplified: use direct scores / 简化:使用直接分数
             overall = (
                 style_result * 25
                 + test_result[0] if isinstance(test_result, tuple) else test_result * 20
@@ -200,7 +200,7 @@ class CodeAnalyzer:
     def _analyze_code_style(self, code_dir: str) -> float:
         """Score coding convention adherence based on config files presence.
 
-        基于配置文件存在情况评分编码约定遵循度。"""
+        基于配置文件存在情况评分编码约定遵循度."""
         score = 0.0
         p = Path(code_dir)
 
@@ -231,7 +231,7 @@ class CodeAnalyzer:
     def _analyze_test_coverage(self, code_dir: str) -> tuple:
         """Estimate test coverage from directory/file patterns.
 
-        从目录/文件模式估计测试覆盖率。"""
+        从目录/文件模式估计测试覆盖率."""
         p = Path(code_dir)
         has_tests = False
         framework_name = None
@@ -299,7 +299,7 @@ class CodeAnalyzer:
     def _analyze_dependencies(self, code_dir: str) -> tuple:
         """Count and assess dependency files.
 
-        计数和评估依赖文件。"""
+        计数和评估依赖文件."""
         p = Path(code_dir)
         dep_count = 0
         outdated = 0
@@ -315,21 +315,21 @@ class CodeAnalyzer:
                               and not l.strip().startswith("#")
                               and not l.strip().startswith("//")]
                     dep_count += len(lines)
-                    # Heuristic: flag common outdated version patterns / 启发式：标记常见过时版本模式
+                    # Heuristic: flag common outdated version patterns / 启发式:标记常见过时版本模式
                     for line in lines[:50]:
                         if re.search(r"<\d+\.\d+", line):
                             outdated += 1  # Might be outdated XML version / 可能是过时的XML版本
                         elif re.search(r"==\d+\.\d+[^,]*,", line):
                             pass  # Pinned is good / 固定版本是好的
                 except Exception:
-                    dep_count += 1  # Couldn't parse; count as at least one / 无法解析；至少计为1个
+                    dep_count += 1  # Couldn't parse; count as at least one / 无法解析;至少计为1个
 
         return (dep_count, outdated)
 
     def _analyze_documentation(self, code_dir: str) -> float:
         """Assess documentation completeness.
 
-        评估文档完整性。"""
+        评估文档完整性."""
         p = Path(code_dir)
         score = 0.0
 
@@ -388,7 +388,7 @@ class CodeAnalyzer:
     def _analyze_architecture(self, code_dir: str) -> float:
         """Evaluate code organization and modularity.
 
-        评估代码组织和模块化。"""
+        评估代码组织和模块化."""
         p = Path(code_dir)
         score = 0.0
 
@@ -438,7 +438,7 @@ class CodeAnalyzer:
     def _detect_security_patterns(self, code_dir: str) -> List[str]:
         """Detect potentially insecure patterns in codebase.
 
-        检测代码库中的潜在不安全模式。"""
+        检测代码库中的潜在不安全模式."""
         issues: List[str] = []
         p = Path(code_dir)
 
@@ -473,7 +473,7 @@ class CodeAnalyzer:
     async def _get_code_directory(self, repository: Repository) -> Optional[str]:
         """Download or retrieve extracted code for analysis.
 
-        下载或获取用于分析的解压代码。"""
+        下载或获取用于分析的解压代码."""
         release = None
 
         # Try to get latest release first / 首先尝试获取最新发布版

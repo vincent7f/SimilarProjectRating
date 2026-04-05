@@ -33,9 +33,9 @@ class RankingEngine:
     strategies (comprehensive score, user preferences, scenario-based)
     with tier classification (S/A/B/C/D) and diversity guarantees.
 
-    为评分项目提供多策略排名引擎。
-    使用可配置策略（综合分数、用户偏好、场景）提供已分析项目的排序，
-    具有分级分类（S/A/B/C/D）和多样性保证。
+    为评分项目提供多策略排名引擎.
+    使用可配置策略(综合分数,用户偏好,场景)提供已分析项目的排序,
+    具有分级分类(S/A/B/C/D)和多样性保证.
     """
 
     def __init__(self) -> None:
@@ -116,7 +116,7 @@ class RankingEngine:
         """Group ranked projects into meaningful categories."""
         groups: Dict[str, Any] = {}
         for rp in ranked:
-            # Simple category: use language or primary strength / 简单分类：使用语言或主要优势
+            # Simple category: use language or primary strength / 简单分类:使用语言或主要优势
             lang = rp.project.primary_language or "unknown"
             key = f"{lang}"
             groups.setdefault(key, []).append(rp)

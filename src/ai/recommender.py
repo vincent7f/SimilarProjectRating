@@ -5,9 +5,9 @@ Generates personalized project recommendations based on scored analysis results.
 Supports different ranking strategies (comprehensive, preference-based, scenario-based)
 and ensures recommendation diversity to avoid homogeneous suggestions.
 
-推荐引擎 - AI驱动的项目推荐生成器。
-基于评分分析结果生成个性化项目推荐。支持不同的排名策略
-（综合、偏好、场景）并确保推荐多样性以避免同质化建议。
+推荐引擎 - AI驱动的项目推荐生成器.
+基于评分分析结果生成个性化项目推荐.支持不同的排名策略
+(综合,偏好,场景)并确保推荐多样性以避免同质化建议.
 """
 
 from __future__ import annotations
@@ -30,23 +30,23 @@ class Recommender:
     Combines algorithmic scoring with AI-generated insights to produce
     ranked recommendations that consider user preferences and use-case context.
 
-    具有多种排名策略的AI增强型项目推荐器。
-将算法评分与AI生成的洞察相结合，生成考虑用户偏好和
-用例上下文的排名推荐。
+    具有多种排名策略的AI增强型项目推荐器.
+将算法评分与AI生成的洞察相结合,生成考虑用户偏好和
+用例上下文的排名推荐.
 
     Attributes:
         llm_client: LLM client for generating recommendation insights.
-                   用于生成推荐洞察的LLM客户端。
+                   用于生成推荐洞察的LLM客户端.
     """
 
     def __init__(self, llm_client: Optional[LLMClient] = None) -> None:
         """Initialize recommender with optional LLM client.
 
-        使用可选LLM客户端初始化推荐器。
+        使用可选LLM客户端初始化推荐器.
 
         Args:
             llm_client: Client for AI-powered explanation generation.
-                      用于AI驱动解释生成的客户端。
+                      用于AI驱动解释生成的客户端.
         """
         self.llm_client = llm_client
 
@@ -60,23 +60,23 @@ class Recommender:
     ) -> List[RankedProject]:
         """Generate ranked recommendations from scored projects.
 
-        从评分项目生成排名推荐。
+        从评分项目生成排名推荐.
 
         Args:
             scored_projects: List of ProjectScore objects sorted by comprehensive score.
-                           按综合分数排序的ProjectScore对象列表。
+                           按综合分数排序的ProjectScore对象列表.
             repositories: Corresponding repository metadata for each score.
-                        每个分数对应的仓库元数据。
+                        每个分数对应的仓库元数据.
             query: Original user search query.
-                  原始用户搜索查询。
+                  原始用户搜索查询.
             strategy: Ranking strategy ('comprehensive', 'preference', 'scenario').
-                     排名策略（'comprehensive'、'preference'、'scenario'）。
+                     排名策略('comprehensive','preference','scenario').
             max_recommendations: Maximum number of projects to recommend.
-                                推荐的最大项目数。
+                                推荐的最大项目数.
 
         Returns:
             List of RankedProject objects with tier classification and highlights.
-             带分级分类和高亮的RankedProject对象列表。
+             带分级分类和高亮的RankedProject对象列表.
         """
         if not scored_projects:
             return []
@@ -138,21 +138,21 @@ class Recommender:
     ) -> List[RankedProject]:
         """Generate recommendations with custom dimension weight overrides.
 
-        使用自定义维度权重覆盖生成推荐。
+        使用自定义维度权重覆盖生成推荐.
 
         Args:
             scored_projects: Pre-scored project list.
-                           预评分项目列表。
+                           预评分项目列表.
             repositories: Repository metadata list.
-                         仓库元数据列表。
+                         仓库元数据列表.
             query: User query string.
-                  用户查询字符串。
+                  用户查询字符串.
             preferences: Dimension name -> custom weight mapping.
-                         维度名称->自定义权重映射。
+                         维度名称->自定义权重映射.
 
         Returns:
             Preference-adjusted ranked recommendations.
-             偏好调整后的排名推荐。
+             偏好调整后的排名推荐.
         """
         # Re-calculate scores with custom weights / 使用自定义权重重新计算分数
         adjusted = []
@@ -181,15 +181,15 @@ class Recommender:
     def group_by_tier(self, ranked: List[RankedProject]) -> Dict[str, List[RankedProject]]:
         """Group ranked projects by their S/A/B/C/D tier.
 
-        将排名项目按S/A/B/C/D等级分组。
+        将排名项目按S/A/B/C/D等级分组.
 
         Args:
             ranked: List of RankedProject objects.
-                 RankedProject对象列表。
+                 RankedProject对象列表.
 
         Returns:
             Dictionary mapping tier value -> list of projects in that tier.
-             映射等级值->该等级中项目列表的字典。
+             映射等级值->该等级中项目列表的字典.
         """
         groups: Dict[str, List[RankedProject]] = {}
         for rp in ranked:
@@ -209,19 +209,19 @@ class Recommender:
     ) -> List[ProjectScore]:
         """Apply ranking strategy adjustments to scores.
 
-        对分数应用排名策略调整。
+        对分数应用排名策略调整.
 
         Args:
             scores: Input scores sorted by comprehensive descending.
-                  按综合降序排序的输入分数。
+                  按综合降序排序的输入分数.
             strategy: Strategy name.
-                     策略名称。
+                     策略名称.
             query: User query (used for scenario matching).
-                  用户查询（用于场景匹配）。
+                  用户查询(用于场景匹配).
 
         Returns:
             Adjusted scores list.
-             调整后的分数列表。
+             调整后的分数列表.
         """
         if strategy == "comprehensive":
             return scores  # No adjustment / 无调整
@@ -248,15 +248,15 @@ class Recommender:
     def _generate_highlights(self, score: ProjectScore) -> List[str]:
         """Generate positive highlight tags based on top-performing dimensions.
 
-        根据表现最佳的维度生成正面高亮标签。
+        根据表现最佳的维度生成正面高亮标签.
 
         Args:
             score: Project score data.
-                 项目评分数据。
+                 项目评分数据.
 
         Returns:
             List of highlight description strings.
-             高亮描述字符串列表。
+             高亮描述字符串列表.
         """
         highlights: List[str] = []
         dim_names = {
@@ -287,15 +287,15 @@ class Recommender:
     def _generate_concerns(self, score: ProjectScore) -> List[str]:
         """Generate concern/warning tags for weak dimensions.
 
-        为弱维度生成关注/警告标签。
+        为弱维度生成关注/警告标签.
 
         Args:
             score: Project score data.
-                 项目评分数据。
+                 项目评分数据.
 
         Returns:
             List of concern description strings.
-             关注描述字符串列表。
+             关注描述字符串列表.
         """
         concerns: List[str] = []
         dim_labels = {
@@ -320,15 +320,15 @@ class Recommender:
     def _infer_use_cases(self, score: ProjectScore) -> List[str]:
         """Infer suitable use cases from score profile.
 
-        从评分概况推断适用场景。
+        从评分概况推断适用场景.
 
         Args:
             score: Project score data.
-                 项目评分数据。
+                 项目评分数据.
 
         Returns:
             List of use case strings.
-             用例字符串列表。
+             用例字符串列表.
         """
         use_cases: List[str] = []
 
@@ -353,13 +353,13 @@ class Recommender:
     ) -> None:
         """Use LLM to generate detailed recommendation reasons for top projects.
 
-        使用LLM为顶级项目生成详细的推荐原因。
+        使用LLM为顶级项目生成详细的推荐原因.
 
         Args:
             ranked: Ranked project list (modified in-place).
-                 排名项目列表（就地修改）。
+                 排名项目列表(就地修改).
             query: Original user query.
-                  原始用户查询。
+                  原始用户查询.
         """
         if not self.llm_client:
             return
