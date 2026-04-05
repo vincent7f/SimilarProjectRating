@@ -31,6 +31,11 @@ query, and the system provides comprehensive comparisons with AI-generated insig
 # Install dependencies / 安装依赖
 pip install -r requirements/base.txt -r requirements/ai.txt
 
+# Run environment check first (recommended) / 先运行环境检查(推荐)
+python -m src.utils.environment_checker
+# or / 或
+python scripts/env_check.py
+
 # Run analysis / 运行分析 (requires Ollama running locally)
 # （需要本地运行Ollama）
 python -m src.main "project management tool"
@@ -38,6 +43,7 @@ python -m src.main "project management tool"
 # With options / 带选项
 python -m src.main "react component library" --max-projects 15 --verbose
 python -m src.main "database orm" --provider openai --model gpt-4 --dry-run
+python -m src.main "OpenClaw AI agent" --env-check-only --strict-check
 ```
 
 ### Prerequisites / 前置条件
@@ -86,6 +92,42 @@ similar_project_rating/
 5. Follow conventional commits: `feat: add X`, `fix: resolve Y`
 6. Each PR/change should modify ≤5 files (per project rules)
 
+### Environment Check / 环境检查
+
+The system includes a comprehensive environment checker that verifies all dependencies before running analysis.
+
+系统包含全面的环境检查器,在运行分析前验证所有依赖项.
+
+```bash
+# Run standalone environment check / 运行独立环境检查
+python -m src.utils.environment_checker
+python scripts/env_check.py
+
+# Check with custom configuration / 使用自定义配置检查
+python -m src.utils.environment_checker --config configs/custom_config.yaml
+
+# Check with strict mode (treat warnings as failures) / 使用严格模式检查(将警告视为失败)
+python scripts/env_check.py --strict
+
+# Save detailed report / 保存详细报告
+python scripts/env_check.py --report check_report.json
+```
+
+**CLI Options for Environment Check / 环境检查的CLI选项:**
+- `--env-check-only` - Run checks and exit (don't analyze) / 运行检查并退出(不进行分析)
+- `--skip-env-check` - Skip environment checks (debug) / 跳过环境检查(调试)
+- `--strict-check` - Treat warnings as failures / 将警告视为失败
+- `--check-report-file FILE` - Save check report to JSON file / 保存检查报告到JSON文件
+
+**What's checked / 检查内容:**
+1. ✅ Python 3.9+ version / Python 3.9+版本
+2. ✅ Required Python packages / 必需的Python包
+3. ✅ Internet connectivity / 互联网连接性
+4. ✅ GitHub API access and rate limits / GitHub API访问和速率限制
+5. ✅ Ollama service (if using Ollama) / Ollama服务(如使用Ollama)
+6. ✅ GitReverse.com connectivity (if enabled) / GitReverse.com连接性(如启用)
+7. ✅ File permissions for output directories / 输出目录的文件权限
+
 ### Configuration / 配置
 
 Edit `configs/config.yaml` to customize:
@@ -94,6 +136,7 @@ Edit `configs/config.yaml` to customize:
 - Analysis thresholds and limits / 分析阈值和限制
 - Scoring dimension weights / 评分维度权重
 - Logging verbosity and format / 日志详细程度和格式
+- Environment check settings / 环境检查设置
 
 ### License / 许可证
 

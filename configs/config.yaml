@@ -141,3 +141,43 @@ cache:
                               # 缓存条目生命周期（秒）（默认：1小时）
   directory: "./data/cache"  # Cache storage directory / 缓存存储目录
   max_entries: 500           # Maximum cached items / 最大缓存项数
+
+# ---------------------------------------------------------------------------
+# Environment Check Settings / 环境检查设置
+# ---------------------------------------------------------------------------
+environment_check:
+  # Execution settings / 执行设置
+  enabled: true               # Enable environment checks before pipeline execution
+                              # 在执行流水线前启用环境检查
+  timeout_seconds: 30         # Timeout for external service checks (GitHub, Ollama, etc.)
+                              # 外部服务检查的超时时间（GitHub、Ollama等）
+  
+  # Check granularity / 检查粒度
+  check_python_packages: true # Check required Python packages
+                              # 检查必需的Python包
+  check_github_api: true      # Check GitHub API connectivity and rate limits
+                              # 检查GitHub API连接性和速率限制
+  check_ai_providers: true    # Check configured AI provider (Ollama/OpenAI)
+                              # 检查配置的AI提供商（Ollama/OpenAI）
+  check_gitreverse: true      # Check GitReverse.com connectivity
+                              # 检查GitReverse.com连接性
+  check_internet: true        # Check basic internet connectivity
+                              # 检查基本互联网连接性
+  check_file_permissions: true # Check write permissions for output directories
+                              # 检查输出目录的写权限
+  
+  # Strictness settings / 严格性设置
+  strict_mode: false          # Treat warnings as failures in strict mode
+                              # 在严格模式下将警告视为失败
+  require_critical_passed: true # Require all critical checks to pass
+                              # 要求所有关键检查通过
+  allow_proceed_with_warnings: true # Allow execution with non-critical warnings
+                              # 允许在有非关键警告的情况下执行
+  
+  # Output settings / 输出设置
+  detailed_report: false      # Show detailed check report instead of summary
+                              # 显示详细的检查报告而非摘要
+  save_report_to_file: false  # Save check report to JSON file
+                              # 将检查报告保存到JSON文件
+  report_file_path: "./logs/environment_check.json"  # Default report file path
+                              # 默认报告文件路径

@@ -68,18 +68,55 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
             '  python -m similar_project_rating "project management tool"\n'
             '  python -m similar_project_rating "react component library" --max-projects 15\n'
             '  python -m similar_project_rating "database orm" --provider openai --model gpt-4\n'
+            '  python -m src.utils.environment_checker --env-check-only\n'
             "\n"
             "示例:\n"
             '  python -m similar_project_rating "项目管理工具"\n'
             '  python -m similar_project_rating "react组件库" --max-projects 15\n'
             '  python -m similar_project_rating "数据库ORM" --provider openai --model gpt-4\n'
+            '  python -m src.utils.environment_checker --env-check-only\n'
         ),
     )
 
-    # Required: user search query / 必需:用户搜索查询
+    # Optional: environment check mode / 可选:环境检查模式
+    parser.add_argument(
+        "--env-check-only",
+        action="store_true",
+        default=False,
+        help="Run environment checks only, then exit. "
+             "仅运行环境检查然后退出.",
+    )
+    
+    parser.add_argument(
+        "--skip-env-check",
+        action="store_true",
+        default=False,
+        help="Skip environment checks (debug mode). "
+             "跳过环境检查(调试模式).",
+    )
+    
+    parser.add_argument(
+        "--strict-check",
+        action="store_true",
+        default=False,
+        help="Treat all warnings as failures (strict mode). "
+             "将所有警告视为失败(严格模式).",
+    )
+    
+    parser.add_argument(
+        "--check-report-file",
+        type=str,
+        default=None,
+        help="Save environment check report to specified JSON file. "
+             "将环境检查报告保存到指定的JSON文件.",
+    )
+    
+    # Required: user search query (unless env-check-only is used) / 必需:用户搜索查询(除非使用了env-check-only)
     parser.add_argument(
         "query",
+        nargs="?",
         type=str,
+        default=None,
         help="Natural language query describing the desired project functionality. "
              "描述期望项目功能的自然语言查询.",
     )
@@ -333,29 +370,31 @@ async def async_main(args: argparse.Namespace) -> int:
     """Execute the main analysis pipeline asynchronously.
 
     Orchestrates the full workflow:
-    1. Initialize configuration and logging
-    2. Generate search keywords via AI
-    3. Search GitHub for candidate projects
-    4. Filter irrelevant projects via AI relevance check
-    5. Analyze filtered projects in parallel (code/community/maturity)
-    6. Calculate multi-dimensional scores
-    7. Rank and generate recommendations
-    8. Output reports and session summary
-    9. Auto-commit step-by-step if enabled
-    10. Task checkpointing and resume support (new)
+    1. Environment checks (optional)
+    2. Initialize configuration and logging
+    3. Generate search keywords via AI
+    4. Search GitHub for candidate projects
+    5. Filter irrelevant projects via AI relevance check
+    6. Analyze filtered projects in parallel (code/community/maturity)
+    7. Calculate multi-dimensional scores
+    8. Rank and generate recommendations
+    9. Output reports and session summary
+    10. Auto-commit step-by-step if enabled
+    11. Task checkpointing and resume support (new)
 
     异步执行主分析流水线.
     编排完整的工作流程:
-    1. 初始化配置和日志
-    2. 通过AI生成搜索关键词
-    3. 在GitHub上搜索候选项目
-    4. 通过AI相关性检查过滤不相关项目
-    5. 并行分析过滤后的项目(代码/社区/成熟度)
-    6. 计算多维分数
-    7. 排名并生成推荐
-    8. 输出报告和会话总结
-    9. 如已启用,自动提交每个步骤
-    10. 任务检查点和恢复支持(新增)
+    1. 环境检查(可选)
+    2. 初始化配置和日志
+    3. 通过AI生成搜索关键词
+    4. 在GitHub上搜索候选项目
+    5. 通过AI相关性检查过滤不相关项目
+    6. 并行分析过滤后的项目(代码/社区/成熟度)
+    7. 计算多维分数
+    8. 排名并生成推荐
+    9. 输出报告和会话总结
+    10. 如已启用,自动提交每个步骤
+    11. 任务检查点和恢复支持(新增)
 
     Args:
         args: Parsed command-line arguments.
@@ -365,6 +404,71 @@ async def async_main(args: argparse.Namespace) -> int:
         Exit code: 0 for success, non-zero for failure.
         退出码:0表示成功,非零表示失败.
     """
+    # Check if this is environment check only mode
+    # 检查是否为仅环境检查模式
+    if args.env_check_only:
+        print("[INFO] Running environment checks only...")
+        
+        # Import environment checker
+        # 导入环境检查器
+        try:
+            from src.utils.environment_checker import EnvironmentChecker
+            checker = EnvironmentChecker(args.config)
+            
+            # Convert config to dict for environment checker
+            # 将配置转换为字典用于环境检查器
+            config_dict = None
+            try:
+                if config:
+                    config_dict = config.to_dict() if hasattr(config, 'to_dict') else config
+            except:
+                pass
+            
+            # Run checks
+            # 运行检查
+            results = await checker.run_checks(
+                config=config_dict,
+                check_ai_provider=True,
+                check_gitreverse=not args.disable_gitreverse if hasattr(args, 'disable_gitreverse') else True
+            )
+            
+            # Print report
+            # 打印报告
+            checker.print_report()
+            
+            # Save report to file if requested
+            # 如果请求,保存报告到文件
+            if args.check_report_file:
+                import json
+                try:
+                    report_data = {
+                        "summary": checker.summary(),
+                        "results": [r.to_dict() for r in results]
+                    }
+                    with open(args.check_report_file, 'w', encoding='utf-8') as f:
+                        json.dump(report_data, f, indent=2, ensure_ascii=False)
+                    print(f"[INFO] Environment check report saved to: {args.check_report_file}")
+                except Exception as e:
+                    print(f"[WARNING] Failed to save report: {e}")
+            
+            # Exit based on check results
+            # 根据检查结果退出
+            if checker.has_critical_failures():
+                print("[ERROR] Critical environment issues found. Cannot proceed.")
+                return 1
+            else:
+                print("[INFO] Environment check completed. System is ready.")
+                return 0
+                
+        except ImportError as e:
+            print(f"[ERROR] Environment checker not available: {e}")
+            return 1
+        except Exception as e:
+            print(f"[ERROR] Environment check failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return 1
+    
     # Setup auto-commit configuration
     # 设置自动提交配置
     enable_auto_commit = (
@@ -451,6 +555,86 @@ async def async_main(args: argparse.Namespace) -> int:
             }
         )
     
+    print(f"[INFO] Query: {args.query}")
+    pri)
+    
+    # Environment check before proceeding
+    # 继续前进行环境检查
+    if not args.skip_env_check and not args.env_check_only:
+        print("[INFO] Running environment checks...")
+        
+        try:
+            from src.utils.environment_checker import EnvironmentChecker
+            checker = EnvironmentChecker(args.config)
+            
+            # Convert config to dict for environment checker
+            # 将配置转换为字典用于环境检查器
+            config_dict = None
+            try:
+                if config:
+                    config_dict = config.to_dict() if hasattr(config, 'to_dict') else config
+            except:
+                pass
+            
+            # Run checks with parameters based on CLI args
+            # 基于CLI参数运行检查
+            check_gitreverse = not args.disable_gitreverse if hasattr(args, 'disable_gitreverse') else True
+            check_ai_provider = True  # Always check AI provider when running analysis
+            
+            results = await checker.run_checks(
+                config=config_dict,
+                check_ai_provider=check_ai_provider,
+                check_gitreverse=check_gitreverse
+            )
+            
+            # Print brief report
+            # 打印简要报告
+            summary = checker.summary()
+            print(f"[INFO] Environment check summary: {summary['passed']} passed, {summary['warnings']} warnings, {summary['failed']} failed")
+            
+            # Save report to file if requested
+            # 如果请求,保存报告到文件
+            if args.check_report_file:
+                import json
+                try:
+                    report_data = {
+                        "summary": summary,
+                        "results": [r.to_dict() for r in results]
+                    }
+                    with open(args.check_report_file, 'w', encoding='utf-8') as f:
+                        json.dump(report_data, f, indent=2, ensure_ascii=False)
+                    print(f"[INFO] Environment check report saved to: {args.check_report_file}")
+                except Exception as e:
+                    print(f"[WARNING] Failed to save report: {e}")
+            
+            # Check if we should proceed
+            # 检查是否应该继续
+            has_critical = checker.has_critical_failures()
+            
+            if args.strict_check:
+                # In strict mode, treat warnings as failures
+                # 在严格模式下,将警告视为失败
+                if summary['warnings'] > 0:
+                    print("[WARNING] Strict check mode: warnings are treated as failures")
+                    has_critical = True
+            
+            if has_critical:
+                print("[ERROR] Critical environment issues detected. Cannot proceed.")
+                print("[INFO] Run with --env-check-only for detailed report or --skip-env-check to bypass.")
+                return 1
+            
+            if summary['failed'] > 0 or summary['warnings'] > 0:
+                print("[WARNING] Non-critical environment issues detected. Continuing with analysis...")
+            else:
+                print("[INFO] All environment checks passed. Starting analysis...")
+        
+        except ImportError as e:
+            print(f"[WARNING] Environment checker not available: {e}")
+            print("[INFO] Continuing without environment checks...")
+        except Exception as e:
+            print(f"[WARNING] Environment check failed: {e}")
+            print("[INFO] Continuing without environment checks...")
+
     print(f"[INFO] Query: {args.query}")
     print(f"[INFO] Max projects: {args.max_projects}")
     print(f"[INFO] Output dir: {args.output}")
